@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Guilherme Duarte</title>
-    <link>/index.xml</link>
-    <description>Recent content on Guilherme Duarte</description>
+    <title>Rcpp on Guilherme Duarte</title>
+    <link>/tags/rcpp/index.xml</link>
+    <description>Recent content in Rcpp on Guilherme Duarte</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Mar 2017 00:00:00 +0000</lastBuildDate>
-    <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="/tags/rcpp/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
       <title>Should we call Cpp from R? Implementing and benchmarking a simple gradient descent procedure with Rcpp</title>
@@ -109,16 +108,6 @@ res &amp;lt;- microbenchmark(gd_cpp(y,x,.001, .5,.5,2) , gd_r(y,x,.001, .5,.5,2)
 ##  5.083942 6.01895    50&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;As we can see, the function written in cpp was around 1.58 times faster than the same function wwritten in R (3.05 vs 4.83). In other words, if you have an analysis that requires velocity and you don’t bother of writing in a more complex language, you should implement in with Rcpp.&lt;/p&gt;
 &lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>/about/</link>
-      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
-      
-      <guid>/about/</guid>
-      <description>&lt;p&gt;Hi. My name is Guilherme Duarte. I work as a data scientist for a major newspaper in Brazil. I&amp;rsquo;m also a Doctoral candidate in Constitutional Law at University of Sao Paulo (Brazil). I apply models to political and general phenomena in order to understand its main features. I&amp;rsquo;m addicted to R. I program in python as well. My interests are: programming, law, political science, methodology, statistics, data science, and music (seriously).&lt;/p&gt;
 </description>
     </item>
     

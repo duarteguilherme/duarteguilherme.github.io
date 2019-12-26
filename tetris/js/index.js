@@ -387,3 +387,11 @@ startSite = function() {
     div.appendChild(game);
     
 }
+
+
+window.setInterval(function(){
+    if ( typeof x == "object" ) {
+        x.moveDown();
+    }
+  /// call your function here
+}, 350);

@@ -23,7 +23,9 @@ code {
 code .MathJax {
   background-color: white;
 }
-
+#linkphoto {
+      border-radius: 50%;
+}
 .wrapper {
   overflow: hidden;
   position: relative;
@@ -35,6 +37,12 @@ code .MathJax {
   background: #333676;
   color: #c7caff;
   border-bottom: 1px solid #eaeaea;
+}
+#linkheader {
+  color: #c7caff;
+}
+#linkheader:visited {
+  color: #c7caff;
 }
 
 .nav {

@@ -359,10 +359,10 @@ Jonathan Mummolo &nbsp; .tiny.highlight[**Princeton**]<br>
 # The Problem
 
 - Is voting habit forming? (Davenport et al., 2010)
-    - $Y$: outcome (voting at $t=2$)
-    - $A$: treatment (voting at $t=1$)
-    - $U$: unobserved confounder (e.g. political interest)
     - $Z$: instrument (encouragement to vote at $t=1$)
+    - $A$: treatment (voting at $t=1$)
+    - $Y$: outcome (voting at $t=2$)
+    - $U$: unobserved confounder (e.g. political interest)
 - We want to investigate the effect of $A$ on $Y$:
 
   <div style = "text-align: center; position: absolute;  top: 40%;  left: 20%;">
@@ -451,8 +451,6 @@ untestable, and its validity  has to be <br> argued in the context of a particul
 --
 - Those assumptions indeed have observable implications (Pearl, '95; Balke & Pearl, '97)
     - These are useful for falsification tests
---
-- We also present new formal sensitivity analyses
 
 
 ---
@@ -553,7 +551,7 @@ class: center, middle, inverse
 <br> 
 
 - In 1995, Pearl derived *Instrumental Inequalities* <citep>(Pearl, '95)</citep>:
-$$\max_a \sum_y [\max_z P(y, a|z) ] \leq 1$$
+$$\max_a \sum_y [\max_z P(y, a|z) ] \leq 1, \text{ under assumptions } 1,2$$
     - If inequalities are violated, then IV assumptions are invalid
 --
 - In practice, falsification tests can detect large violations
@@ -666,8 +664,8 @@ class: center, middle, inverse
 --
 - But we want to understand
 how bounds change across a range of violations:
-    - E.g. defiers are at most 0.2 of units, restrict $\theta \in [0, 0.2]$
-    - E.g. E.R. violation units are at most 0.01, restrict $\psi \in [0, 0.01]$
+    - E.g. defiers are *at most* 0.2 of units, restrict $\theta \in [0, 0.2]$
+    - E.g. E.R. violation units are *at most* 0.01, restrict $\psi \in [0, 0.01]$
 --
 - **Sensitivity analysis**: optimize bounds over possible $\theta$ and $\psi$ using *Autobounds*:
  
@@ -766,10 +764,10 @@ class: center, middle, inverse
     - Instrument is many valued
         - Who is a defier?
     - Exclusion restriction violated
-        - Trial judge can read the case nots of arraignment judge 
+        - Trial judge can read the case notes of arraignment judge 
 --
 - Reanalysis of Stevenson (2018): positive effect of $0.13$
-- Paper: derive results for many-valued instrument
+- Our paper: derive results for many-valued instrument
 - Today: compare two judges at a time (more severe to more lenient)
 
 

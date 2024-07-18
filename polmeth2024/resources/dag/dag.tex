@@ -1,0 +1,981 @@
+\documentclass[multi=page]{standalone}
+
+\usepackage{xcolor}
+\usepackage{soul}
+\setul{2pt}{.5pt}
+
+\usepackage{mathspec}  % use xelatex to compile
+%% \setallmainfonts{Raleway}
+\setallmainfonts{Roboto Light}
+\setmathfont(Digits,Latin)[Uppercase=Regular,Lowercase=Regular,Arabic=Regular]{Roboto Light}
+\DeclareMathSizes{5}{5}{3}{2.5}
+
+\definecolor{darkred}{HTML}{A51C30}
+
+\renewcommand{\bf}{}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,decorations,arrows,calc,arrows.meta,fit,positioning}
+
+\newcommand{\invisiblesection}[1]{%
+  \par\refstepcounter{section}% Increase section counter
+  \sectionmark{#1}% Add section mark (header)
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}% Add section to ToC
+  % Add more content here, if needed.
+}
+
+\begin{document}
+
+\tikzset{
+  every picture/.style={
+    align=center,
+    x=1.5cm, y=1.5cm,
+    shorten <=.5ex , shorten >=.5ex,
+    minimum width=3ex, minimum height=3ex
+  }
+}
+
+\invisiblesection{CONFOUNDING}
+\begin{page}
+  CONFOUNDING
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+    %% %% data
+    %% \draw [
+    %%   -, 
+    %%   dotted,
+    %%   red,
+    %%   semithick,
+    %%   rounded corners
+    %% ] (-1.4, -.4) rectangle (1.4, .4);
+  \end{tikzpicture}
+\end{page}
+
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {\begin{tabular}{cc}drug\\prescribed\end{tabular}};
+    \node (Y) at (1, 0) {\begin{tabular}{cc}health\\outcome\end{tabular}};
+    \node (W) at (0, 1) {\begin{tabular}{cc}disease\\progression\end{tabular}};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.4, -.4) rectangle (1.4, .4);
+  \end{tikzpicture}
+\end{page}
+
+% actual data
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+    % box around xy
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.4, -.4) rectangle (1.4, .4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (0, -.5) {$n^{(1)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+% c1: xy
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+    % box around xy
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.4, -.4) rectangle (1.4, .4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (0, -.5) {$m^{(1)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+% c2: w
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+    % box around w
+    \draw [
+      -,
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-.4, .6) rectangle (.4, 1.4);
+    \node[
+      darkred,
+      % fill=white,
+      % fill opacity=0.5,
+      text opacity=1,
+      scale=.75
+    ] (N) at (0, 1.5) {$m^{(2)}=10,000$};
+  \end{tikzpicture}
+\end{page}
+
+% c3: wx
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+      % box around w & x
+      \draw [
+        rotate around={45:(-1, 0)},
+        -, 
+        dotted,
+        darkred,
+        semithick,
+        rounded corners
+      ] (-1.4, -.4) rectangle (.85, .4);
+      \path [
+        rotate around={45:(-1, 0)},
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1
+      ] node [rotate=45, scale=.75] (N) at (-.275, .5) {$m^{(3)}=10$};
+  \end{tikzpicture}
+\end{page}
+
+% c4: wy
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+    % box around w & y
+    \draw [
+      rotate around={-45:(1, 0)},
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-.85, -.4) rectangle (1.4, .4);
+    \path [
+      rotate around={-45:(1, 0)},
+      darkred,
+      % fill=white,
+      % fill opacity=0.5,
+      text opacity=1
+    ] node [rotate=-45, scale=.75] (N) at (.275, .5) {$m^{(4)}=10$};
+  \end{tikzpicture}
+\end{page}
+
+% c5: wxy
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1, 0) {$X$};
+    \node (Y) at (1, 0) {$Y$};
+    \node (W) at (0, 1) {$W$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->](Y);
+    \path[gray] (X) edge [->](Y);
+    % box around w & x & y
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.4, -.4) rectangle (1.4, 1.4);
+    \node[
+      darkred,
+      % fill=white,
+      % fill opacity=0.5,
+      text opacity=1,
+      scale=.85
+    ] (N) at (0, -.5) {$m^{(5)}=1$};
+  \end{tikzpicture}
+\end{page}
+
+
+
+\invisiblesection{PROXY}
+\begin{page}
+  PROXY
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (Wa) at (-.5, 1) {$W$};
+    \node (Wb) at (1.5, 1) {$W^\ast$};
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Y) at (.5, 0) {$Y$};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (Wa) at (-.5, 1) {\begin{tabular}{cc}disease\\progression\end{tabular}};
+    \node (Wb) at (1.5, 1) {\begin{tabular}{cc}immune\\response\end{tabular}};
+    \node (X) at (-1.5, 0) {\begin{tabular}{cc}drug\\prescribed\end{tabular}};
+    \node (Y) at (.5, 0) {\begin{tabular}{cc}health\\outcome\end{tabular}};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (Wa) at (-.5, 1) {$W$};
+    \node (Wb) at (1.5, 1) {$W^\ast$};
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Y) at (.5, 0) {$Y$};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.9, -.4) -- (-1.9, .4) -- (.33, .4) -- (1.5, 1.57) --
+    (2.07, 1) -- (.67, -.4) -- (-1.9, -.4);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (Wa) at (-.5, 1) {$W$};
+    \node (Wb) at (1.5, 1) {$W^\ast$};
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Y) at (.5, 0) {$Y$};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.9, -.4) -- (-1.9, .4) -- (.33, .4) -- (1.5, 1.57) --
+    (2.07, 1) -- (.67, -.4) -- (-1.9, -.4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (-.5, -.5) {$n^{(1)}=1,000$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (Wa) at (-.5, 1) {$W$};
+    \node (Wb) at (1.5, 1) {$W^\ast$};
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Y) at (.5, 0) {$Y$};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.9, -.4) -- (-1.9, .4) -- (.33, .4) -- (1.5, 1.57) --
+    (2.07, 1) -- (.67, -.4) -- (-1.9, -.4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (-.5, -.5) {$m^{(1)}=1,000$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (Wa) at (-.5, 1) {$W$};
+    \node (Wb) at (1.5, 1) {$W^\ast$};
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Y) at (.5, 0) {$Y$};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-.9, .6) rectangle (1.9, 1.4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (.5, 1.5) {$m^{(2)}=10$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node[draw] (Wa) at (-.5, 1) {$W=0$};
+    \node (Wb) at (1.5, 1) {$W^\ast$};
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Y) at (.5, 0) {$Y$};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.0, .6) rectangle (1.9, 1.4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (.5, 1.5) {$m^{(3)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node[draw] (Wa) at (-.5, 1) {$W=1$};
+    \node (Wb) at (1.5, 1) {$W^\ast$};
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Y) at (.5, 0) {$Y$};
+    %% base dag
+    \path[gray] (Wa) edge [->](X);
+    \path[gray] (Wa) edge [->](Y);
+    \path[gray] (Wa) edge [->](Wb);      
+    \path[gray] (X) edge [->](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.0, .6) rectangle (1.9, 1.4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (.5, 1.5) {$m^{(4)}=10$};
+  \end{tikzpicture}
+\end{page}
+
+\invisiblesection{MISSINGNESS}
+\begin{page}
+  MISSINGNESS
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Ya) at (-.5, 1) {$Y$};
+    \node (R) at (1.5, 1) {$R$};
+    \node (Yb) at (.5, 0) {$Y^\ast$};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    \path[gray] (R) edge [->](Yb);
+    \path[gray] (Ya) edge [->](Yb);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {\begin{tabular}{cc}randomized\\drug prescription\end{tabular}};
+    \node (Ya) at (-.5, 1) {\begin{tabular}{cc}health\\outcome\end{tabular}};
+    %% \node (R) at (1.5, 1) {\begin{tabular}{cc}attrition\\from trial\end{tabular}};
+    %% \node (Yb) at (.5, 0) {\begin{tabular}{cc}observed\\outcome\end{tabular}};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    %% \path[gray] (X) edge [->](R);
+    %% \path[gray] (Ya) edge [->](R);
+    %% \path[gray] (R) edge [->](Yb);
+    %% \path[gray] (Ya) edge [->](Yb);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {\begin{tabular}{cc}randomized\\drug prescription\end{tabular}};
+    \node (Ya) at (-.5, 1) {\begin{tabular}{cc}health\\outcome\end{tabular}};
+    \node (R) at (1.5, 1) {\begin{tabular}{cc}attrition\\from trial\end{tabular}};
+    %% \node (Yb) at (.5, 0) {\begin{tabular}{cc}observed\\outcome\end{tabular}};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    %% \path[gray] (R) edge [->](Yb);
+    %% \path[gray] (Ya) edge [->](Yb);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {\begin{tabular}{cc}randomized\\drug prescription\end{tabular}};
+    \node (Ya) at (-.5, 1) {\begin{tabular}{cc}health\\outcome\end{tabular}};
+    \node (R) at (1.5, 1) {\begin{tabular}{cc}attrition\\from trial\end{tabular}};
+    \node (Yb) at (.5, 0) {\begin{tabular}{cc}observed\\outcome\end{tabular}};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    \path[gray] (R) edge [->](Yb);
+    \path[gray] (Ya) edge [->](Yb);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {\begin{tabular}{cc}randomized\\info. exposure\end{tabular}};
+    \node (Ya) at (-.5, 1) {\begin{tabular}{cc}stigmatized\\belief\end{tabular}};
+    \node (R) at (1.5, 1) {\begin{tabular}{cc}deliberate\\nonresponse\end{tabular}};
+    \node (Yb) at (.5, 0) {\begin{tabular}{cc}reported\\belief\end{tabular}};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    \path[gray] (R) edge [->](Yb);
+    \path[gray] (Ya) edge [->](Yb);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Ya) at (-.5, 1) {$Y$};
+    \node (R) at (1.5, 1) {$R$};
+    \node (Yb) at (.5, 0) {$Y^\ast$};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    \path[gray] (R) edge [->](Yb);
+    \path[gray] (Ya) edge [->](Yb);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.9, -.4) rectangle (.9, .4);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Ya) at (-.5, 1) {$Y$};
+    \node (R) at (1.5, 1) {$R$};
+    \node (Yb) at (.5, 0) {$Y^\ast$};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    \path[gray] (R) edge [->](Yb);
+    \path[gray] (Ya) edge [->](Yb);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.9, -.4) rectangle (.9, .4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (-.5, -.5) {$n^{(1)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Ya) at (-.5, 1) {$Y$};
+    \node (R) at (1.5, 1) {$R$};
+    \node (Yb) at (.5, 0) {$Y^\ast$};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    \path[gray] (R) edge [->](Yb);
+    \path[gray] (Ya) edge [->](Yb);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-1.9, -.4) rectangle (.9, .4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (-.5, -.5) {$m^{(1)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (X) at (-1.5, 0) {$X$};
+    \node (Ya) at (-.5, 1) {$Y$};
+    \node[draw] (R) at (1.5, 1) {$R=0$};
+    \node (Yb) at (.5, 0) {$Y^\ast$};
+    %% base dag
+    \path[gray] (X) edge [->](Ya);
+    \path[gray] (X) edge [->](R);
+    \path[gray] (Ya) edge [->](R);
+    \path[gray] (R) edge [->](Yb);
+    \path[gray] (Ya) edge [->](Yb);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (2.0, 1.4) -- (2.0, .6) -- (-.33, .6) -- (-1.5, -.57) --
+    (-2.07, 0) -- (-.67, 1.4) -- (2.0, 1.4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+    ] (N) at (.5, 1.5) {$m^{(2)}=10$};
+  \end{tikzpicture}
+\end{page}
+
+\invisiblesection{MEDIATION}
+\begin{page}
+  MEDIATION
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {$W$};
+    \node (X) at (0, 0) {$X$};
+    \node (Y) at (2, 0) {$Y$};
+    \node[gray]  (UXY) at (1, 1) {$U_{XY}$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {\begin{tabular}{cc}imagine\\helping\end{tabular}};
+    \node (X) at (0, 0) {\begin{tabular}{cc}vividness of\\imagination\end{tabular}};
+    \node (Y) at (2, 0) {\begin{tabular}{cc}willingness\\to help\end{tabular}};
+    \node[gray] (UXY) at (1, 1) {\begin{tabular}{cc}egocentrism,\\intelligence, etc.\end{tabular}};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {$W$};
+    \node (X) at (0, 0) {$X$};
+    \node (Y) at (2, 0) {$Y$};
+    \node[gray] (UXY) at (1, 1) {$U_{XY}$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-2.4, -.7) rectangle (2.4, .4);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {$W$};
+    \node (X) at (0, 0) {$X$};
+    \node (Y) at (2, 0) {$Y$};
+    \node[gray] (UXY) at (1, 1) {$U_{XY}$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-2.4, -.7) rectangle (2.4, .4);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (0, -.8) {$n^{(1)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {$W$};
+    \node[draw] (Z) at (-1, 1) {$Z=0$};
+    \node (X) at (0, 0) {$X$};
+    \node (Y) at (2, 0) {$Y$};
+    \node[gray] (UXY) at (1, 1) {$U_{XY}$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (Z) edge [->](X);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-2.4, -.7) -- (2.4, -.7) -- (2.4, .4) -- (0.4, .4) -- (-.6, 1.4) --
+    (-1.4, 1.4) -- (-2.4, .4) -- (-2.4, -.7);
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {$W$};
+    \node[draw] (Z) at (-1, 1) {$Z=0$};
+    \node (X) at (0, 0) {$X$};
+    \node (Y) at (2, 0) {$Y$};
+    \node[gray] (UXY) at (1, 1) {$U_{XY}$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (Z) edge [->](X);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-2.4, -.7) -- (2.4, -.7) -- (2.4, .4) -- (0.4, .4) -- (-.6, 1.4) --
+    (-1.4, 1.4) -- (-2.4, .4) -- (-2.4, -.7);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (0, -.8) {$n^{(1)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {$W$};
+    \node[draw] (Z) at (-1, 1) {$Z=0$};
+    \node (X) at (0, 0) {$X$};
+    \node (Y) at (2, 0) {$Y$};
+    \node[gray] (UXY) at (1, 1) {$U_{XY}$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (Z) edge [->](X);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-2.4, -.7) -- (2.4, -.7) -- (2.4, .4) -- (0.4, .4) -- (-.6, 1.4) --
+    (-1.4, 1.4) -- (-2.4, .4) -- (-2.4, -.7);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (0, -.8) {$m^{(1)}=100$};
+  \end{tikzpicture}
+\end{page}
+
+\begin{page}
+  \begin{tikzpicture}
+    %% setup
+    \useasboundingbox (-3, -1) rectangle (3, 2);
+    %% node defs
+    \node (W) at (-2, 0) {$W$};
+    \node[draw] (Z) at (-1, 1) {$Z=1$};
+    \node (X) at (0, 0) {$X$};
+    \node (Y) at (2, 0) {$Y$};
+    \node[gray] (UXY) at (1, 1) {$U_{XY}$};
+    %% base dag
+    \path[gray] (W) edge [->](X);
+    \path[gray] (W) edge [->, bend right=25](Y);
+    \path[gray] (Z) edge [->](X);
+    \path[gray] (X) edge [->](Y);
+    \path[gray] (UXY) edge [->, dashed](X);
+    \path[gray] (UXY) edge [->, dashed](Y);
+    %% data
+    \draw [
+      -, 
+      dotted,
+      darkred,
+      semithick,
+      rounded corners
+    ] (-2.4, -.7) -- (2.4, -.7) -- (2.4, .4) -- (0.4, .4) -- (-.6, 1.4) --
+    (-1.4, 1.4) -- (-2.4, .4) -- (-2.4, -.7);
+    \node[
+        darkred,
+        % fill=white,
+        % fill opacity=0.5,
+        text opacity=1,
+        scale=.75
+      ] (N) at (0, -.8) {$m^{(2)}=50$};
+  \end{tikzpicture}
+\end{page}
+
+
+\end{document}

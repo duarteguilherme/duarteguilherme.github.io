@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAG with Confounding Variable</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <script>
+        // Create the SVG container
+        const width = 400, height = 400;
+        const svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Define node coordinates
+        const nodes = [
+            { id: "X", x: 100, y: 200 },
+            { id: "Y", x: 300, y: 200 },
+            { id: "W", x: 200, y: 100 }
+        ];
+
+        // Define edges
+        const links = [
+            { source: "X", target: "Y", style: "solid" },
+            { source: "W", target: "X", style: "dashed" },
+            { source: "W", target: "Y", style: "dashed" }
+        ];
+
+        // Draw nodes
+        svg.selectAll("circle")
+            .data(nodes)
+            .enter()
+            .append("circle")
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y)
+            .attr("r", 20)
+            .attr("fill", "lightblue");
+
+        // Draw node labels
+        svg.selectAll("text")
+            .data(nodes)
+            .enter()
+            .append("text")
+            .attr("x", d => d.x)
+            .attr("y", d => d.y)
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .attr("font-family", "Arial")
+            .attr("font-size", "16px")
+            .text(d => d.id);
+
+        // Draw edges
+        svg.selectAll("path")
+            .data(links)
+            .enter()
+            .append("path")
+            .attr("d", d => `M ${d.source.x} ${d.source.y} L ${d.target.x} ${d.target.y}`)
+            .attr("stroke", "black")
+            .attr("stroke-width", 2)
+            .attr("fill", "none")
+            .attr("marker-end", "url(#arrow)")
+            .attr("stroke-dasharray", d => d.style === "dashed" ? "5,5" : "");
+
+        // Define arrowhead marker
+        svg.append("defs")
+            .append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 25)
+            .attr("refY", 0)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "black");
+    </script>
+</body>
+</html>

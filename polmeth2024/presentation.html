@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Evaluating the Validity and Robustness of <br> Instrumental-Variable Analyses</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <style>
+@keyframes fade {   0% {     opacity: 1;   }   25% {     opacity: 1;   }   75% {     opacity: 0;   }   100% {     opacity: 0; display: none;   } }
+      /* latin */
+      @font-face {
+      font-family: 'Montserrat';
+      font-style: normal;
+      font-weight: 100;
+      src: url(./resources/fonts/Montserrat/Montserrat-Thin.ttf) format('truetype');
+      }
+      @font-face {
+      font-family: 'CourierPrime';
+      font-style: normal;
+      font-weight: 100;
+      src: url(./resources/fonts/Courier_Prime/CourierPrime-Regular.ttf) format('truetype');
+      }
+
+      /* latin */
+      @font-face {
+      font-family: 'Montserrat';
+      font-style: normal;
+      font-weight: 300;
+      src: url(./resources/fonts/Montserrat/Montserrat-Light.ttf) format('truetype');
+      }
+      /* latin */
+      @font-face {
+      font-family: 'Montserrat';
+      font-style: bold;
+      font-weight: 700;
+      src: url(./resources/fonts/Montserrat/Montserrat-Bold.ttf) format('truetype');
+      }
+
+      /* latin */
+      @font-face {
+      font-family: 'Raleway', 'Montserrat';
+      font-style: normal;
+      font-weight: 400;
+      src: url(./resources/fonts/Raleway/Raleway-Regular.ttf) format('truetype');
+      }
+      /* latin */
+      @font-face {
+      font-family: 'Raleway', 'Montserrat';
+      font-style: bold;
+      font-weight: 700;
+      src: url(./resources/fonts/Raleway/Raleway-SemiBold.ttf) format('truetype');
+      }
+
+      /* latin */
+      @font-face {
+      font-family: 'Great Vibes';
+      font-style: normal;
+      font-weight: 300;
+      src: url(./resources/fonts/Great_Vibes/GreatVibes-Regular.ttf) format('truetype');
+      }
+
+
+      h1 {
+      font-family: 'Montserrat', 'Montserrat';
+      font-weight: 55600;
+      color: #110080;
+      }
+
+      h2 {
+      font-family: 'Montserrat', 'Montserrat';
+      font-weight: 400;
+      color: #110080;
+      }
+
+      p {
+      font-family: 'Montserrat';
+      font-weight: 300;
+      }
+
+      body {
+      font-family: 'Montserrat';
+      font-weight: 300;
+      }
+
+      .footnote {
+      position: absolute;
+      bottom: 1.5%;
+      left: 10%;
+      text-align: left;
+      width: 50;
+      font-size: 18px;
+      z-index: 1;
+      }
+
+      b, strong {
+      font-family: 'Montserrat';
+      font-weight: 700;
+      }
+
+      table, th, tr, td {
+      border-style:none;
+      <!-- font-size: 100%; -->
+      }
+
+      tr.underline td{
+      border-bottom: 1px solid black;
+      }
+      
+      tr.start td{
+      border-top: double black;
+      }
+
+      tr.end td{
+      border-bottom: double;
+      }
+
+      td {
+      padding-bottom: 1ex;
+      vertical-align: top;
+      }
+
+      .footnote td {
+      padding-bottom: 0ex;
+      vertical-align: top;
+      }
+
+      .functiondef td {
+      vertical-align: middle;
+      padding-bottom: 0ex;
+      line-height: 1
+      }
+
+      sup {
+      vertical-align: top; 
+      font-size: 0.5em;
+      top: -.5ex;
+      }
+
+      sub {
+      vertical-align: bottom; 
+      font-size: 0.75em;
+      bottom: -.5ex;
+      }
+
+      ul, ol {
+      padding-top: 0ex;
+      }
+
+      li {
+      padding-bottom: 1ex;
+      }
+
+      .remark-slide-content {
+      height: 100%;
+      background-size: cover;
+      color: #4f4f4f;
+      }
+
+      .inverse {
+      background: #110080;
+      color: #FFFFFF;
+      }
+
+      .inverse_alt {
+      background: #4E84C4;
+      color: #FFFFFF;
+      }
+
+      .remark-slide-content h1 {
+      font-size: 200%;
+      }
+
+      .remark-slide-content h2 {
+      font-size: 200%;
+      }
+
+      .remark-slide-content p {
+      font-size: 26px;
+      }
+
+      .remark-slide-content li {
+      font-size: 24px;
+      padding-bottom: 1.5ex;
+      }
+
+      .remark-slide-content li li {
+      font-size: 22px;
+      padding-bottom: 0ex;
+      }
+      
+      .remark-slide-content li:last-child{
+      padding-bottom: 0ex;
+      }
+
+      .inverse h1, .inverse h2 {
+      color: #f3f3f3;
+      line-height: 0.8em;
+      }
+
+      .tiny {
+      font-size: 60%;
+      }
+
+      citep {
+      font-size: 60%;
+      }
+      .smaller {
+      font-size: 75%;
+      }
+      
+      .small {
+      font-size: 90%;
+      }
+      
+      .large {
+      font-size: 120%;
+      }
+
+      .huge {
+      font-size: 150%;
+      }
+
+      .highlight {
+      color: #110080;
+      }
+
+      .highlight_alt {
+      color: #4E84C4;
+      }
+
+      a {
+      color: #4E84C4;
+      }
+
+      .gray {
+      color: #A1A1A1;
+      }
+
+      .darkgray {
+      color: dimgray;
+      }
+      .debug {
+						border: 3px solid #73AD21;
+					}
+      .arrowhead {             
+                        fill: black;         
+                    }         
+                    .dashed {             
+                        stroke-dasharray: 5, 5;         
+                    }     
+      .code p {
+          font-family: 'CourierPrime';
+          font-size: 50%;
+          line-height: 0.5%;
+      }
+
+      .code {
+          text-align: justify;
+          font-family: monospace;
+          font-size: 70%;
+          line-height: 0.5%;
+      }
+
+
+      codex {
+          text-align: left;
+          font-family: monospace;
+          font-size: 80%;
+          line-height: 0.05%;
+      }
+
+      table.center td {
+      text-align: center;
+      }
+            
+      .overlay {
+      background-color: white;
+      background-color: rgba(255,255,255,0.75);
+      font-size: 150%;
+      width: auto;
+      position: absolute;
+      padding: .25em;
+      border-radius: .25em;
+      }
+
+      .summary {
+      background-color: white;
+      background-color: rgba(255, 255, 255, 0.7);
+      font-size: 35px;
+      display: table;
+      text-align: center;
+      vertical-align: middle;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      }
+
+      .remark-code, .remark-inline-code { font-family: 'Montserrat Mono'; }
+
+      .shrink_img {
+	  transform: scale(.3);
+	  transform-origin: center; 
+      }
+
+      .stretch150 {
+	  transform: scale(1, 1.5)
+      }
+
+      .stretch200 {
+	  transform: scale(1, 2)
+      }
+
+      green {
+        color: rgb(0, 100, 0);
+      }
+      
+      brown {
+        color: rgb(132, 61, 61);
+      }
+
+      blue {
+        color: rgb(0, 0, 160);
+      }
+
+      yellow {
+        color: rgb(150, 110, 0) ;
+      }
+      red {
+        color:#bc005e
+      }
+
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+
+<h1 style="font-size: 220%; text-align: left; margin-bottom: 20px">Evaluating the Validity and Robustness of <br> Instrumental-Variable Analyses</h1>
+
+<br><br><br><br><br><br><br>
+<span class="today" style="margin-bottom: 20px"></span>
+<br>
+<div>
+<div style = "font-size: 20pt; float: left;">
+Kai Cooper &nbsp; .tiny.highlight[**Penn**]<br>
+Guilherme Duarte &nbsp; .tiny.highlight[**Penn**]<br>
+Luke Keele &nbsp; .tiny.highlight[**Penn**]<br>
+</div>
+<div style = "font-size: 20pt; float: right;">
+Dean Knox &nbsp; .tiny.highlight[**Penn**]<br>
+Kennedy Mattes &nbsp; .tiny.highlight[**Harvard**]<br>
+Jonathan Mummolo &nbsp; .tiny.highlight[**Princeton**]<br>
+</div>
+</div>
+---
+
+# The Problem
+
+- Is voting habit forming? (Davenport et al., 2010)
+    - $Y$: outcome (voting at $t=2$)
+    - $A$: treatment (voting at $t=1$)
+    - $U$: unobserved confounder (e.g. political interest)
+    - $Z$: instrument (encouragement to vote at $t=1$)
+- We want to investigate the effect of $A$ on $Y$:
+
+  <div style = "text-align: center; position: absolute;  top: 40%;  left: 20%;">
+      <svg id ="fg3iv" width="800" height="800"> </svg>
+  </div>
+
+
+
+---
+
+# IV Theory Review
+
+
+1. **Exogeneity**: $(Y(a), A(z)) \perp\kern-5pt\perp Z$: 
+    - <span style = "color: red">Violation:</span> Confounding between $Z$ and $Y$
+
+<div style = "text-align: center; position: absolute;  top: 40%;  left: 20%;">
+      <svg id ="sg1iv_vio" width="800" height="800"> </svg>
+</div>
+    
+
+---
+
+# IV Theory Review
+
+
+1. **Exogeneity**: $(Y(a), A(z)) \perp\kern-5pt\perp Z$: 
+    - <span style = "color: black">Violation:</span> Confounding between $Z$ and $Y$
+2. **Exclusion restriction**: $Y(a,z) = Y(a)$
+    - <span style = "color: red">Violation:</span> Direct arrow from $Z$ to $Y$
+
+
+<div style = "text-align: center; position: absolute;  top: 40%;  left: 20%;">
+  <svg id ="sg2iv_vio" width="800" height="800"> </svg>
+</div>
+
+
+---
+
+# IV Theory Review
+
+
+
+1. **Exogeneity**: $(Y(a), A(z)) \perp\kern-5pt\perp Z$: 
+    - <span style = "color: black">Violation:</span> Confounding between $Z$ and $Y$
+2. **Exclusion restriction**: $Y(a,z) = Y(a)$
+    - <span style = "color: black">Violation:</span> Direct arrow from $Z$ to $Y$
+3. **No defiers**:   $A(Z=1) \geq A(Z=0)$
+    - <span style = "color: red">Violation:</span> Units challenge their assignment 
+
+
+<div style = "text-align: center; position: absolute;  top: 40%;  left: 20%;">
+  <svg id ="sg3iv" width="800" height="800"> </svg>
+</div>
+
+
+---
+
+# IV Theory Review
+
+1. **Exogeneity**: $(Y(a), A(z)) \perp\kern-5pt\perp Z$: 
+    - <span style = "color: black">Violation:</span> Confounding between $Z$ and $Y$
+2. **Exclusion restriction**: $Y(a,z) = Y(a)$
+    - <span style = "color: black">Violation:</span> Direct arrow from $Z$ to $Y$
+3. **No defiers**:   $A(Z=1) \geq A(Z=0)$
+    - <span style = "color: red">Violation:</span> Units challenge their assignment 
+
+- LATE = $E[Y(a_1) - Y(a_0)|\text{compliers}]$ is identifiable if one assumes 1, 2, and 3 .tiny[(Imbens & Angrist, '94)]
+
+
+<div style = "text-align: center; position: absolute;  top: 40%;  left: 20%;">
+  <svg id ="sg3iv2" width="800" height="800"> </svg>
+</div>
+
+---
+
+# Are these assumptions testable?
+
+<br> 
+
+<div style = "font-size: 24px; text-align: center"><span style = "font-style: italic"> &ldquo;fundamentally
+untestable, and its validity  has to be <br> argued in the context of a particular application&rdquo;</span><br> 
+<span style = "text-align: right">(Imbens & Angrist,'94' on monotonicity/IV assumptions) </span></div>
+<br>
+
+--
+- Those assumptions indeed have observable implications (Pearl, '95; Balke & Pearl, '97)
+    - These are useful for falsification tests
+--
+- We also present new formal sensitivity analyses
+
+
+---
+
+
+# Testing/Sensitivity Framework
+
+- **Framework**:
+--
+
+    1. Define assumptions, collect available data, state an estimand
+--
+    2. Test if data contradicts assumptions
+--
+    3. Derive sharp bounds for the estimand 
+--
+    4. Sensitivity: check how violations affect results
+--
+- Based on automated partial identification .tiny[(Duarte et al., '23; Duarte, '24)]
+    - When a quantity is not identified, we still get sharp bounds
+--
+    - We can evaluate bounds when assumptions are relaxed
+
+
+---
+
+
+  
+# Evaluating IV Assumptions
+
+<br><br><br> 
+
+<div style = "border-style: solid; border-radius: 8%; text-align: center; position: relative; width:31%; height: 33%; margin: 0%; margin-right: 1.5%; padding: 0%; display: inline-block; float: left"> 
+    <p style = "font-size: 18pt; font-weight: bold" > Testing </p>
+    <img width = "92%" src = "figs/roadmap2.png">
+
+</div>
+---
+
+  
+# Evaluating IV Assumptions
+
+<br><br><br> 
+
+<div style = "border-style: solid; border-radius: 8%; text-align: center; position: relative; width:31%; height: 33%; margin: 0%; margin-right: 1.5%; padding: 0%; display: inline-block; float: left"> 
+    <p style = "font-size: 18pt; font-weight: bold" > Testing </p>
+    <img width = "92%" src = "figs/roadmap2.png">
+
+</div>
+&nbsp;
+<div style = "border-style: solid; border-radius: 8%; text-align: center; position: relative; width:31%; height: 33%; margin: 0%; padding: 0%; display: inline-block; float: center"> 
+    <p style = "font-size: 18pt; font-weight: bold" > Sensitivity </p>
+    <img width = "59%" src = "figs/roadmap4.png">
+
+</div>
+
+---
+
+  
+# Evaluating IV Assumptions
+
+<br><br><br> 
+
+<div style = "border-style: solid; border-radius: 8%; text-align: center; position: relative; width:31%; height: 33%; margin: 0%; margin-right: 1.5%; padding: 0%; display: inline-block; float: left"> 
+    <p style = "font-size: 18pt; font-weight: bold" > Testing </p>
+    <img width = "92%" src = "figs/roadmap2.png">
+
+</div>
+&nbsp;
+<div style = "border-style: solid; border-radius: 8%; text-align: center; position: relative; width:31%; height: 33%; margin: 0%; padding: 0%; display: inline-block; float: center"> 
+    <p style = "font-size: 18pt; font-weight: bold" > Sensitivity </p>
+    <img width = "59%" src = "figs/roadmap4.png">
+
+</div>
+&nbsp;
+<div style = "border-style: solid; border-radius: 8%; text-align: center; position: relative; width:31%; height: 33%; margin: 0%; padding: 0%; display: inline-block; float: right"> 
+    <p style = "font-size: 18pt; font-weight: bold" > Applications </p>
+    <img width = "59%" src = "figs/roadmap3.png">
+
+</div>
+
+
+
+
+---
+
+
+
+class: center, middle, inverse
+
+# Testing 
+# Assumptions
+
+---
+
+# Observable Implications
+
+<br> 
+
+- In 1995, Pearl derived *Instrumental Inequalities* <citep>(Pearl, '95)</citep>:
+$$\max_a \sum_y [\max_z P(y, a|z) ] \leq 1$$
+    - If inequalities are violated, then IV assumptions are invalid
+--
+- In practice, falsification tests can detect large violations
+--
+
+- Smaller violations may go undetected
+--
+
+- Note: if exogeneity is satisfied (e.g. by random assignment), this is a test of the exclusion restriction 
+---
+
+
+#  Generalized IV Falsification Test
+
+- Kedagni and Mourifie (2020) proved that if a model satisfies exclusion restriction and exogeneity, then:
+
+.small[$$
+\max_z P(y_1, a |z) +   \max_z P(y_1, a' |z) \leq 1 \\\\
+\max_z P(y_1, a |z) -   \min_z P(y_1|z)  - \min_z \{ P(y_1, a |z) + P(y_0, a' |z) \}  \leq 0 \\\\
+\max_z P(y_0, a |z) -   \min_z P(y_0|z)  - \min_z \{ P(Y_0, a |z) - P(y_1, a' |z) \} \leq 0 \\\\
+\min_z P(y_0|z) + \min_z P(y_1|z) +  \min_z \{ P(y_0, a |z) +  P(y_1, a' |z) \min_z \{ P(y_1, a |z) + P(y_0, a' |z) \} \geq 1 \}   \\
+$$]
+
+---
+
+
+#  Generalized IV Falsification Test
+
+- Kedagni and Mourifie (2020) proved that if a model satisfies exclusion restriction and exogeneity, then:
+
+.small[$$
+\max_z P(y_1, a |z) +   \max_z P(y_1, a' |z) \leq 1 \\\\
+\max_z P(y_1, a |z) -   \min_z P(y_1|z)  - \min_z \{ P(y_1, a |z) + P(y_0, a' |z) \}  \leq 0 \\\\
+\max_z P(y_0, a |z) -   \min_z P(y_0|z)  - \min_z \{ P(Y_0, a |z) - P(y_1, a' |z) \} \leq 0 \\\\
+\min_z P(y_0|z) + \min_z P(y_1|z) +  \min_z \{ P(y_0, a |z) +  P(y_1, a' |z) \min_z \{ P(y_1, a |z) + P(y_0, a' |z) \} \geq 1 \}   \\
+$$]
+
+- There are no other observable implications (sharpness)
+
+---
+
+
+# Monotonicity Falsification Test
+
+- If we also assume monotonicity .tiny[(Balke & Pearl, '97')]:
+.small[$$
+P(y_1,a_1|z_1) - P(y_1,a_1|z_0) \geq 0  \\\\
+P(y_0,a_1|z_1) - P(y_0,a_1|z_0) \geq 0  \\\\
+P(y_0,a_0|z_0) - P(y_0,a_0|z_1) \geq 0 \\\\
+P(y_1,a_0|z_0) - P(y_1,a_0|z_1) \geq 0 \\\\
+P(a_1|z_1)  - P(a_1|z_0) \geq 0
+$$]
+
+---
+
+
+# Monotonicity Falsification Test
+
+- If we also assume monotonicity .tiny[(Balke & Pearl, '97')]:
+.small[$$
+P(y_1,a_1|z_1) - P(y_1,a_1|z_0) \geq 0  \\\\
+P(y_0,a_1|z_1) - P(y_0,a_1|z_0) \geq 0  \\\\
+P(y_0,a_0|z_0) - P(y_0,a_0|z_1) \geq 0 \\\\
+P(y_1,a_0|z_0) - P(y_1,a_0|z_1) \geq 0 \\\\
+\bf{ \color{red}{P(a_1|z_1)  - P(a_1|z_0) \geq 0}}
+$$]
+- The ATE of $Z$ on $A$ being positive is a weak test
+--
+
+- The test is sharp .tiny[(Kitagawa, 2015)]
+
+
+---
+
+
+
+class: center, middle, inverse
+
+# Sensitivity
+# Analysis
+
+---
+
+# Sensitivity Analysis
+
+- How much can these assumptions be violated before the data is uninformative?
+--
+
+- Let $\theta$ be the proportion of defiers and $\psi$, of E.R. violators
+    - How do bounds change in response to their values?
+--
+- *Sensitivity function*: bounds as function of violations / data
+    - E.g. what are LATE bounds given $\theta$ or $\psi$ and $P(Y,A,Z)$?
+--
+- How can we derive sensitivity functions?
+    - Use *Autobounds* <citep> (Duarte et al., '23) </citep> to get numerical approximations
+--
+    - Use Autobounds-Ext <citep> (Duarte, '24) </citep> to derive closed-form solutions
+--
+    - Both are based on the principles of automated partial id.
+--
+    - One states a causal question, introduces data and assumptions, and gets sharp bounds on the estimand
+
+
+---
+# Sensitivity Analysis
+
+- Sensitivity functions depend on *exact* violations: 
+    - $\theta$, $\psi$ take precise values
+--
+- But we want to understand
+how bounds change across a range of violations:
+    - E.g. defiers are at most 0.2 of units, restrict $\theta \in [0, 0.2]$
+    - E.g. E.R. violation units are at most 0.01, restrict $\psi \in [0, 0.01]$
+--
+- **Sensitivity analysis**: optimize bounds over possible $\theta$ and $\psi$ using *Autobounds*:
+ 
+---
+
+
+
+class: center, middle, inverse
+    
+# Empirical 
+# Applications
+
+---
+
+# Simulation
+
+- We simulate a scenario with $N = 10^6$ units:
+    - 10% of defiers and 31.5% of units violating exclusion restriction
+    - 4.6% of units violate both assumptions at the same time
+--
+- Test the inequalities against the data
+    - Detection of no defiers and E.R. violations (p-value $< 0.01$)
+    - $E[A(z_1) - A(z_0)] = 0.1$: naive $\text{ATE}_A$ test fails to detect them
+--
+- Sensitivity Analysis:
+    - Proportion of violating units is at least 0.03
+
+
+---
+
+
+# Reanalysis: Davenport et al. (2010)
+
+- Testing habit forming with turnout encouragement
+    - instrument $Z$: encouragement to vote
+    - treatment $A$: voting in 2006 Michigan elections
+    - outcome $Y$: voting in subsequent elections
+--
+- Are there defiers? Is the exclusion restriction violated?
+--
+
+- Testing results:
+    - Tests: cannot reject violations
+    - ATE: $[−0.494, 0.423]$,  with 95% CI of $[−0.5, 0.425]$
+    - LATE: $0.124$, with 95% CI of $[0.08, 0.17]$
+--
+- Just because we did not detect violations, it does not mean they are not there, so we proceed with sensitivity analysis
+---
+
+# Reanalysis: Davenport et al. (2010)
+
+- Sensitivity Analysis:
+    - How robust are those results to violations of no defiers?
+    - ATE is not much affected
+    - LATE is positive if the proportion of defiers is $< 1\%$
+    - Violations cause nonlinear impact on the LATE 
+
+<img src = "figs/davenport_theta.png" style = "width: 75%; position: absolute; top: 43%; left: 18%;">
+
+---
+# Reanalysis: Davenport et al. (2010)
+
+- Sensitivity Analysis:
+    - How robust are those results to violations of E.R.?
+    - ATE is not much affected
+    - LATE is positive if the proportion of violations is is $< 1\%$
+    - Violations cause linear impact on the LATE 
+
+<img src = "figs/davenport_psi.png" style = "width: 75%; position: absolute; top: 43%; left: 18%;">
+
+
+---
+
+
+
+
+class: center, middle, inverse
+    
+# More Complex
+# Scenarios
+
+---
+
+
+
+# Judge IV Design and Issues
+
+-  Use judge random assignment as natural experiment:
+    - E.g. estimate the effect of pre-trial detention on conviction
+    - $Z$: judge random assignment
+    - $A$: pre-trial detention
+    - $Y$: conviction
+--
+- Complications:
+    - Instrument is many valued
+        - Who is a defier?
+    - Exclusion restriction violated
+        - Trial judge can read the case nots of arraignment judge 
+--
+- Reanalysis of Stevenson (2018): positive effect of $0.13$
+- Paper: derive results for many-valued instrument
+- Today: compare two judges at a time (more severe to more lenient)
+
+
+---
+
+
+# Reanalysis of Stevenson (2018)
+
+- Comparison between the most extreme judges ($z_0$ / $z_n$):
+    - "No defiers" assumption is rejected (p-value $< 0.01$)
+    - The bounds cross in the region where $\theta$ is 0.0015, with LATE equal to $-0.84$
+    - High negative LATE contradicts the main result of the paper, suggesting small violations cause high bias to the LATE estimate, even when evaluated at the minimum $\theta$
+
+<img src = "figs/stevenson_31.png" style = "width: 75%; position: absolute; top: 50%; left: 18%;">
+
+
+
+---
+
+# Reanalysis of Stevenson (2018)
+
+- Comparison between somewhat extreme judges ($z_2$ / $z_n$):
+    - "No defiers" is not rejected for this case
+    - No pre-existent violation, so LATE is identifiable at $0.044$
+    - LATE is unsigned if we allow for small $\theta$ deviation (close to $0$)
+
+
+<img src = "figs/stevenson_01.png" style = "width: 75%; position: absolute; top: 50%; left: 18%;">
+
+
+---
+
+
+# Conclusions
+
+- IV assumptions often characterized as untestable
+- We *can* empirically evaluate key assumptions
+    - Falsify monotonicity/exclusion restriction
+    - Sensitivity analysis for defiers and E.R. violations
+- Show we can reject assumptions in practice
+- In applications, IV results extremely sensitive to minor violations
+- Extensions: 
+    - Characterize robustness in the IV literature
+    - Use framework for other models, e.g. factorial experiments
+
+---
+
+
+
+
+
+class: center, middle, inverse
+
+# 
+#  Guilherme Duarte
+## gjduarte@upenn.edu
+## &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+
+---
+
+
+<!-- THE END -->
+
+    </textarea>
+		<script src="js/d3.v6.min.js"></script>
+        <script src="figs/first_bounds_plot.js"></script>
+        <script src="figs/conf_diagram.js"></script>
+		<script src="figs/events.js"></script>
+
+		
+
+    <script src="js/remark-latest.min.js"></script>
+   
+
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']], skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] } });
+          <!--Browser-specific hack for Safari tilde bug -->
+  <!--thanks to dpvc at https://github.com/mathjax/MathJax/issues/1737-->
+      if (MathJax.Hub.Browser.isSafari && parseInt(MathJax.Hub.Browser.webkit) >= 603) {
+MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready", function () {
+  var HTMLCSS = MathJax.OutputJax["HTML-CSS"];
+  var MML = MathJax.ElementJax.mml;
+  var toHTML = MML.mo.prototype.toHTML;
+  MML.mo.Augment({
+    toHTML: function (span) {
+      span = toHTML.call(this,span);
+      if (span.bbox.w === 0 && span.bbox.lw < 0 && span.firstChild) {
+        span.style.marginLeft = HTMLCSS.Em(span.bbox.lw);
+      }
+      return span;
+    }
+  });
+});
+}
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML">
+  </script>
+
+
+    <script>
+      let graphsInitialized = false;
+
+      // configure remark.js
+      var slideshow = remark.create({
+      countIncrementalSlides: false,
+      navigation: {scroll: false},
+      slideNumberFormat: ''
+      });
+
+    slideshow.on('showSlide', function (slide) {
+      if (!graphsInitialized) {
+                console.log('initializing');
+                initializeGraphs();
+            }
+        if (slide.getSlideIndex() === 1) { // Change the slide index as per your requirement
+            // Select the div and append the svg
+//            fg1();
+        }
+        // if (slide.getSlideIndex() === 2) { // Change the slide index as per your requirement
+        //     // Select the div and append the svg
+        //     fg2conf();
+        // }
+    });
+    </script>
+
+      <script>
+
+        var videos = document.getElementsByClassName("media");
+        function prepareCheckScroll(){
+          window.setTimeout("checkScroll()", 1000);
+        }
+        function checkScroll() {
+
+					for(var i = 0; i < videos.length; i++) {
+						var video = videos[i];
+						var x = video.offsetLeft, y = video.offsetTop, w = video.offsetWidth, h = video.offsetHeight, r = x + w, //right
+						b = y + h, //bottom
+						visibleX, visibleY, visible;
+						visibleX = Math.max(0, Math.min(w, window.pageXOffset + window.innerWidth - x, r - window.pageXOffset));
+						visibleY = Math.max(0, Math.min(h, window.pageYOffset + window.innerHeight - y, b - window.pageYOffset));
+						visible = visibleX * visibleY / (w * h);
+
+						if (visible > .5) {
+							video.play();
+						} else {
+							video.currentTime = 0;
+							video.pause();
+						}
+					}
+				}
+
+				window.addEventListener('keydown', prepareCheckScroll, false);
+				window.addEventListener('keyup', prepareCheckScroll, false);
+      </script>
+
+      <script>
+        var months = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+        var today = new Date();
+        var dateElements = document.getElementsByClassName('today');
+        [].forEach.call(dateElements, function(dateElement){
+        dateElement.innerHTML = today.getDate() + " " + months[today.getMonth()] + " " + today.getFullYear();
+        })
+      </script>
+
+  </body>
+</html>

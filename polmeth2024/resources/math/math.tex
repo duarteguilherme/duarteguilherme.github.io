@@ -1,0 +1,183 @@
+\documentclass[multi=page, border={1mm 1mm 1mm 1mm}]{standalone}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{physics}  % for \dd (d in integral dx)
+\usepackage{fullpage}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{esvect}
+\usepackage{xcolor}
+\usepackage{soul}
+\setul{2pt}{.5pt}
+
+\usepackage{mathspec}  % use xelatex to compile
+%% \setallmainfonts{Raleway}
+\setallmainfonts{Roboto Light}
+\setmathfont(Digits,Latin)[Uppercase=Regular,Lowercase=Regular,Arabic=Regular,BoldFont=Roboto Black]{Roboto Light}
+\DeclareMathSizes{5}{5}{3}{2.5}
+%% \DeclareMathSizes{12}{12}{6}{3}
+
+\definecolor{darkred}{HTML}{A51C30}
+
+%% \renewcommand{\bf}{}
+
+\newcommand{\wstar}{\mathsmaller{\text{\FiveStarOpen}}}
+\newcommand{\bstar}{\mathsmaller{\text{\FiveStar}}}
+\newcommand{\lb}{\text{lb}}
+\newcommand{\LB}{\text{LB}}
+\newcommand{\ub}{\text{ub}}
+\newcommand{\UB}{\text{UB}}
+\newcommand{\bA}{\textbf{A}}
+\newcommand{\ba}{\textbf{a}}
+\newcommand{\bB}{\textbf{B}}
+\newcommand{\bb}{\textbf{b}}
+\newcommand{\bdelta}{\textbf{\delta}}
+\newcommand{\aC}{\vv{C}}
+\newcommand{\bC}{\textbf{C}}
+\newcommand{\ac}{\vv{c}}
+\newcommand{\bc}{\textbf{c}}
+\newcommand{\aD}{\vv{D}}
+\newcommand{\bD}{\textbf{D}}
+\newcommand{\ad}{\vv{d}}
+\newcommand{\bd}{\textbf{d}}
+\newcommand{\bE}{\textbf{E}}
+\newcommand{\bq}{\textbf{q}}
+\newcommand{\bR}{\textbf{R}}
+\newcommand{\br}{\textbf{r}}
+\newcommand{\bS}{\textbf{S}}
+\newcommand{\bs}{\textbf{s}}
+\newcommand{\bF}{\textbf{F}}
+\newcommand{\bp}{\textbf{p}}
+\newcommand{\aU}{\vv{U}}
+\newcommand{\bU}{\textbf{U}}
+\newcommand{\au}{\vv{u}}
+\newcommand{\bu}{\textbf{u}}
+\newcommand{\aV}{\vv{V}}
+\newcommand{\bV}{\textbf{V}}
+\newcommand{\av}{\vv{v}}
+\newcommand{\bv}{\textbf{v}}
+\newcommand{\bW}{\textbf{W}}
+\newcommand{\bw}{\textbf{w}}
+\newcommand{\bx}{\textbf{x}}
+\newcommand{\bX}{\textbf{X}}
+\newcommand{\bY}{\textbf{Y}}
+\newcommand{\by}{\textbf{y}}
+\newcommand{\bpa}{\textbf{pa}}
+\newcommand{\pa}{pa}
+\newcommand{\bch}{\textbf{ch}}
+\newcommand{\atheta}{\vv{\theta}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\M}{\mathbb{M}}
+\newcommand{\Y}{\mathbb{Y}}
+\newcommand{\bbR}{\mathbb{R}}
+\newcommand{\bbZ}{\mathbb{Z}}
+\newcommand{\bone}{\textbf{1}}
+\newcommand{\bbone}{\mathbbm{1}}
+\newcommand{\indep}{\perp \!\!\! \perp}
+\newcommand{\concat}{+\!\!\!+}
+\renewcommand{\l}{\left}
+\renewcommand{\r}{\right}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,decorations,arrows,calc,arrows.meta,fit,positioning}
+
+\newcommand{\invisiblesection}[1]{%
+  \par\refstepcounter{section}% Increase section counter
+  \sectionmark{#1}% Add section mark (header)
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}% Add section to ToC
+  % Add more content here, if needed.
+}
+
+\begin{document}
+
+\invisiblesection{CONFOUNDING}
+\begin{page}
+  CONFOUNDING
+\end{page}
+
+\begin{page}
+$\bD^{(1)}$: $n^{(1)}$ samples of $[X, Y]^\top$
+\end{page}
+
+\begin{page}
+$[X, Y]^\top \sim \text{Categorical}(\atheta_{XY})$, where $\atheta_{XY} = \l[ \Pr(X=x, Y=y) \r]^\top$
+\end{page}
+
+
+\begin{page}
+$\atheta_{XY} = \l[ \Pr(X=x, Y=y) \r]^\top$
+\end{page}
+
+\begin{page}
+$p(\atheta_{XY} | \bD^{(1)}) \sim \text{Dirichlet}\l(\#\{\bD^{(1)}\} + \textbf{1} \r)$
+\end{page}
+
+\begin{page}
+$\#\{\bC^{(1)}\} \sim \text{Multinomial}\l(\atheta_{XY}, m^{(1)}\r)$
+\end{page}
+
+\begin{page}
+$\#\{\bC^{(2)}\} \sim \text{Multinomial}\l(\atheta_{W}, m^{(2)}\r)$
+\end{page}
+
+
+\begin{page}
+$p\l(\atheta_{\aC^{(t)}} | \bD^{(1)}, \ldots, \bD^{(S)}\r)$
+\end{page}
+
+\begin{page}
+$\#\{\bC^{(t)}\} \sim \text{Multinomial}\l(\atheta_{\aC^{(t)}}, m^{(t)}\r)$
+\end{page}
+
+\begin{page}
+$\l[\underline{\tau}, \overline{\tau} \r]^\top = \text{Autobounds}( \atheta_{XY})$
+\end{page}
+
+\begin{page}
+$p( \underline{\tau}, \overline{\tau} \mid \bD^{(1)} ) = \displaystyle\int \delta\l\{ \text{Autobounds}(\atheta_{XY}) - [\underline{\tau}, \overline{\tau}]^\top \r\} p(\atheta_{XY} \mid \bD^{(1)})\dd \atheta_{XY}$
+\end{page}
+
+\begin{page}
+  $\E_{\bC^{(1)}}\l[ \text{width of } \text{Autobounds}_{\alpha=95\%}\l(\bD^{(1)} \cup \bC^{(1)}\r) \mid \bD^{(1)} \r]$
+\end{page}
+
+\begin{page}
+  $\text{arg min}_t\  \E_{\bC^{(t)}}\l[ \text{width of } \text{Autobounds}_{\alpha=95\%}\l(\bD^{(1)} \cup \bC^{(t)}\r) \mid \bD^{(1)} \r]$
+\end{page}
+
+\begin{page}
+  $\text{arg min}_t\  \E_{\bC^{(t)}}\l[ \text{width of } \text{Autobounds}_{\alpha=95\%}\l(\bD^{(1)} \cup \ldots \cup \bD^{(S)} \cup \bC^{(t)}\r) \mid \bD^{(1)}, \ldots, \bD^{(S)} \r]$
+\end{page}
+
+
+\begin{page}
+  $\displaystyle\iint  \l| \text{Autobounds}_{\alpha=95\%}\l(\bD^{(1)} \cup \bC^{(1)}\r) \r| p(\bc^{(1)} | \atheta_{XY})\ p(\atheta_{XY} \mid \bD^{(1)})\ \dd \bc^{(1)} \dd \atheta_{XY}$
+\end{page}
+
+\begin{page}
+  $\displaystyle\iint  \l| \text{Autobounds}_{\alpha=95\%}\l(\bD^{(1)} \cup \ldots \bD^{(S)} \cup \bC^{(t)}\r) \r| p(\bc^{(t)} | \atheta_{\aC^{(t)}})\ p(\atheta_{\aC^{(t)}} \mid \bD^{(1)}, \ldots, \bD^{(S)})\ \dd \bc^{(t)} \dd \atheta_{\aC^{(t)}}$
+\end{page}
+
+\end{document}

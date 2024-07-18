@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   class="svglite"
+   width="504.00pt"
+   height="360.00pt"
+   viewBox="0 0 504.00 360.00"
+   version="1.1"
+   id="svg60"
+   sodipodi:docname="plot_estimates9.svg"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview60"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt"
+     inkscape:zoom="1.0896959"
+     inkscape:cx="338.16775"
+     inkscape:cy="258.32896"
+     inkscape:window-width="1440"
+     inkscape:window-height="786"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg60" />
+  <defs
+     id="defs1">
+    <style
+       type="text/css"
+       id="style1"><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+  ]]></style>
+  </defs>
+  <rect
+     width="100%"
+     height="100%"
+     style="stroke: none; fill: #FFFFFF;"
+     id="rect1" />
+  <defs
+     id="defs2">
+    <clipPath
+       id="cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA=">
+      <rect
+         x="0.00"
+         y="0.00"
+         width="504.00"
+         height="360.00"
+         id="rect2" />
+    </clipPath>
+  </defs>
+  <g
+     clip-path="url(#cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA=)"
+     id="g3">
+    <rect
+       x="0.00"
+       y="0.00"
+       width="504.00"
+       height="360.00"
+       style="stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;"
+       id="rect3" />
+  </g>
+  <defs
+     id="defs4">
+    <clipPath
+       id="cpMjIuNjR8NDk4LjUyfDUuNDh8MzA5LjI2">
+      <rect
+         x="22.64"
+         y="5.48"
+         width="475.88"
+         height="303.78"
+         id="rect4" />
+    </clipPath>
+  </defs>
+  <g
+     clip-path="url(#cpMjIuNjR8NDk4LjUyfDUuNDh8MzA5LjI2)"
+     id="g40">
+    <rect
+       x="22.64"
+       y="5.48"
+       width="475.88"
+       height="303.78"
+       style="stroke-width: 1.07; stroke: none; fill: #FFFFFF;"
+       id="rect5" />
+    <polyline
+       points="22.64,289.30 498.52,289.30 "
+       style="stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline5" />
+    <polyline
+       points="22.64,213.36 498.52,213.36 "
+       style="stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline6" />
+    <polyline
+       points="22.64,137.43 498.52,137.43 "
+       style="stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline7" />
+    <polyline
+       points="22.64,61.50 498.52,61.50 "
+       style="stroke-width: 0.53; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline8" />
+    <polyline
+       points="22.64,251.33 498.52,251.33 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline9" />
+    <polyline
+       points="22.64,175.40 498.52,175.40 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline10" />
+    <polyline
+       points="22.64,99.46 498.52,99.46 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline11" />
+    <polyline
+       points="22.64,23.53 498.52,23.53 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline12" />
+    <polyline
+       points="90.63,309.26 90.63,5.48 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline13" />
+    <polyline
+       points="203.93,309.26 203.93,5.48 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline14" />
+    <polyline
+       points="317.23,309.26 317.23,5.48 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline15" />
+    <polyline
+       points="430.54,309.26 430.54,5.48 "
+       style="stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;"
+       id="polyline16" />
+    <polyline
+       points="79.30,131.70 101.96,131.70 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline17" />
+    <polyline
+       points="90.63,131.70 90.63,162.20 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline18" />
+    <polyline
+       points="79.30,162.20 101.96,162.20 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline19" />
+    <polyline
+       points="192.60,142.79 215.26,142.79 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline23" />
+    <polyline
+       points="203.93,142.79 203.93,163.48 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline24" />
+    <polyline
+       points="192.60,163.48 215.26,163.48 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline25" />
+    <polyline
+       points="305.90,142.79 328.56,142.79 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline26" />
+    <polyline
+       points="317.23,142.79 317.23,295.45 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline27" />
+    <polyline
+       points="305.90,295.45 328.56,295.45 "
+       style="stroke-width: 1.07; stroke: #FF0000; stroke-linecap: butt;"
+       id="polyline28" />
+    <polyline
+       points="87.79,147.17 93.46,147.17 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline29" />
+    <polyline
+       points="90.63,147.17 90.63,147.17 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline30" />
+    <polyline
+       points="87.79,147.17 93.46,147.17 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline31" />
+    <polyline
+       points="430.54,95.74 430.54,95.74 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline33" />
+    <polyline
+       points="201.10,153.08 206.76,153.08 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline35" />
+    <polyline
+       points="203.93,153.08 203.93,153.08 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline36" />
+    <polyline
+       points="201.10,153.08 206.76,153.08 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline37" />
+    <polyline
+       points="314.40,289.88 320.07,289.88 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline38" />
+    <polyline
+       points="317.23,289.88 317.23,153.08 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline39" />
+    <polyline
+       points="314.40,153.08 320.07,153.08 "
+       style="stroke-width: 4.27; stroke: #0000FF; stroke-linecap: butt;"
+       id="polyline40" />
+    <line
+       x1="22.64"
+       y1="153.06"
+       x2="498.52"
+       y2="153.06"
+       style="stroke-width: 1.07; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;"
+       id="line40" />
+    <rect
+       x="22.64"
+       y="5.48"
+       width="475.88"
+       height="303.78"
+       style="stroke-width: 1.07; stroke: #333333;"
+       id="rect40" />
+  </g>
+  <g
+     clip-path="url(#cpMC4wMHw1MDQuMDB8MC4wMHwzNjAuMDA=)"
+     id="g60">
+    <text
+       x="17.71"
+       y="254.48"
+       text-anchor="end"
+       style="font-size: 8.80px;fill: #4D4D4D; font-family: &quot;Arial&quot;;"
+       textLength="12.23px"
+       lengthAdjust="spacingAndGlyphs"
+       id="text40">0.2</text>
+    <text
+       x="17.71"
+       y="178.55"
+       text-anchor="end"
+       style="font-size: 8.80px;fill: #4D4D4D; font-family: &quot;Arial&quot;;"
+       textLength="12.23px"
+       lengthAdjust="spacingAndGlyphs"
+       id="text41">0.4</text>
+    <text
+       x="17.71"
+       y="102.62"
+       text-anchor="end"
+       style="font-size: 8.80px;fill: #4D4D4D; font-family: &quot;Arial&quot;;"
+       textLength="12.23px"
+       lengthAdjust="spacingAndGlyphs"
+       id="text42">0.6</text>
+    <text
+       x="17.71"
+       y="26.68"
+       text-anchor="end"
+       style="font-size: 8.80px;fill: #4D4D4D; font-family: &quot;Arial&quot;;"
+       textLength="12.23px"
+       lengthAdjust="spacingAndGlyphs"
+       id="text43">0.8</text>
+    <polyline
+       points="19.90,251.33 22.64,251.33 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline43" />
+    <polyline
+       points="19.90,175.40 22.64,175.40 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline44" />
+    <polyline
+       points="19.90,99.46 22.64,99.46 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline45" />
+    <polyline
+       points="19.90,23.53 22.64,23.53 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline46" />
+    <polyline
+       points="90.63,312.00 90.63,309.26 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline47" />
+    <polyline
+       points="203.93,312.00 203.93,309.26 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline48" />
+    <polyline
+       points="317.23,312.00 317.23,309.26 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline49" />
+    <polyline
+       points="430.54,312.00 430.54,309.26 "
+       style="stroke-width: 1.07; stroke: #333333; stroke-linecap: butt;"
+       id="polyline50" />
+    <text
+       x="90.629997"
+       y="320.5"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#4d4d4d"
+       textLength="46.459999"
+       lengthAdjust="spacingAndGlyphs"
+       id="text50"
+       transform="matrix(1.2461313,0,0,1.507329,-22.983,-153.26865)">Conditional </text>
+    <text
+       x="90.629997"
+       y="330"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#4d4d4d"
+       textLength="19.549999"
+       lengthAdjust="spacingAndGlyphs"
+       id="text51"
+       transform="matrix(1.2461313,0,0,1.507329,-22.983,-153.26865)"> ATE</text>
+    <text
+       x="203.92999"
+       y="320.5"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#4d4d4d"
+       textLength="46.459999"
+       lengthAdjust="spacingAndGlyphs"
+       id="text52"
+       transform="matrix(1.2461313,0,0,1.507329,-51.966051,-157.08221)">Conditional </text>
+    <text
+       x="203.92999"
+       y="330"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#4d4d4d"
+       textLength="36.169998"
+       lengthAdjust="spacingAndGlyphs"
+       id="text53"
+       transform="matrix(1.2461313,0,0,1.507329,-51.966051,-157.08221)"> Survival </text>
+    <text
+       x="203.92999"
+       y="339.5"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#4d4d4d"
+       textLength="22.98"
+       lengthAdjust="spacingAndGlyphs"
+       id="text54"
+       transform="matrix(1.2461313,0,0,1.507329,-51.966051,-157.08221)"> Ratio</text>
+    <text
+       x="317.23001"
+       y="320.5"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#ff0000"
+       textLength="46.459999"
+       lengthAdjust="spacingAndGlyphs"
+       id="text55"
+       transform="matrix(1.2461313,0,0,1.507329,-77.135543,-158.60763)">Conditional </text>
+    <text
+       x="317.23001"
+       y="330"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#ff0000"
+       textLength="47.419998"
+       lengthAdjust="spacingAndGlyphs"
+       id="text56"
+       transform="matrix(1.2461313,0,0,1.507329,-77.135543,-158.60763)"> Sufficiency </text>
+    <text
+       x="317.23001"
+       y="339.5"
+       text-anchor="middle"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.37357px;font-family:Georgia;-inkscape-font-specification:'Georgia Bold';fill:#ff0000"
+       textLength="43.040001"
+       lengthAdjust="spacingAndGlyphs"
+       id="text57"
+       transform="matrix(1.2461313,0,0,1.507329,-77.135543,-158.60763)"> Invariance</text>
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-size:18px;fill:#000000;stroke-width:0.75"
+     x="68.644066"
+     y="45.762711"
+     id="text61"><tspan
+       sodipodi:role="line"
+       id="tspan60"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:18px;font-family:Helvetica;-inkscape-font-specification:Helvetica;stroke-width:0.75"
+       x="68.644066"
+       y="45.762711">Average outcome: 0.46</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;fill:#000000;stroke-width:0.599096"
+     x="79.546875"
+     y="124.35036"
+     id="text62"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61"
+       style="font-weight:bold;fill:#ff0000;stroke-width:0.599096"
+       x="79.546875"
+       y="124.35036">0.51</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="195.57526"
+     y="132.66759"
+     id="text62-9"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-0"
+       style="font-weight:bold;fill:#ff0000;stroke-width:0.599096"
+       x="195.57526"
+       y="132.66759">0.48</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="196.96439"
+     y="172.37189"
+     id="text62-5"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-6"
+       style="font-weight:bold;fill:#ff0000;stroke-width:0.599096"
+       x="196.96439"
+       y="172.37189">0.43</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="311.21378"
+     y="134.98572"
+     id="text62-2"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-68"
+       style="font-weight:bold;fill:#ff0000;stroke-width:0.599096"
+       x="311.21378"
+       y="134.98572">0.48</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="313.69061"
+     y="298.53781"
+     id="text62-1"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-4"
+       style="font-weight:bold;fill:#ff0000;stroke-width:0.599096"
+       x="313.69061"
+       y="298.53781">0.08</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="79.37323"
+     y="170.94566"
+     id="text62-8"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-5"
+       style="font-weight:bold;fill:#ff0000;stroke-width:0.599096"
+       x="79.37323"
+       y="170.94566">0.43</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="100.77369"
+     y="143.43213"
+     id="text62-59"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-09"
+       style="font-weight:bold;fill:#0000ff;stroke-width:0.599096"
+       x="100.77369"
+       y="143.43213">0.47</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="225.10083"
+     y="159.68378"
+     id="text62-59-4"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-09-7"
+       style="font-weight:bold;fill:#0000ff;stroke-width:0.599096"
+       x="225.10083"
+       y="159.68378">0.46</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="332.54871"
+     y="160.91682"
+     id="text62-59-40"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-09-0"
+       style="font-weight:bold;fill:#0000ff;stroke-width:0.599096"
+       x="332.54871"
+       y="160.91682">0.46</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.3783px;font-family:Helvetica;-inkscape-font-specification:Helvetica;white-space:pre;fill:#000000;stroke-width:0.599096"
+     x="333.33499"
+     y="281.39838"
+     id="text62-59-2"
+     transform="scale(0.97000116,1.0309266)"><tspan
+       sodipodi:role="line"
+       id="tspan61-09-4"
+       style="font-weight:bold;fill:#0000ff;stroke-width:0.599096"
+       x="333.33499"
+       y="281.39838">0.1</tspan></text>
+</svg>

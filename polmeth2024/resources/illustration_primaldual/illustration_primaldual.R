@@ -1,0 +1,1727 @@
+## graphics
+library(Cairo)
+library(viridis)
+library(rgl)
+options(rgl.printRglwidget = TRUE)
+
+## data/math
+library(data.table)
+library(MASS)
+
+
+
+
+
+###########
+## style ##
+###########
+
+## rglFonts(sans =
+##            file.path(
+##              '/home/dcknox/.local/share/fonts/Unknown Vendor/TrueType',
+##              c('Raleway/Raleway_Regular.ttf',
+##                'Raleway/Raleway_Bold.ttf',
+##                'Raleway/Raleway_Italic.ttf',
+##                'Raleway/Raleway_Bold_Italic.ttf'
+##                )
+##            )
+##          )
+
+CairoFonts(regular = 'Roboto:Regular',
+           bold = 'Roboto:Bold',
+           italic = 'Roboto:Italic'
+           )
+
+red <- '#A51C30'
+blue <- '#4E84C4'
+
+
+
+#########################
+## branch & bound demo ##
+#########################
+
+## setup
+dx <- .01
+modelspace <- seq(0, 1, dx)
+estimand_fun <- function(x){
+  .5 * ((x + .05) * sin((x + .05) * 3 * pi) - .2 * (x + .05)^2 + .3 * (x + .05)^3 + 1)
+}
+estimand <- estimand_fun(modelspace)
+
+## initial branching params
+n <- 8
+xwidth <- diff(range(modelspace)) / n
+ygap <- .05
+
+CairoPNG('2d_function.png', width = 1600, height = 1200)
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## function to optimize
+lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+dev.off()
+
+
+
+for (j in 1:n){
+  CairoPNG(sprintf('2d_upperbound_%s.png', j),
+           width = 1600,
+           height = 1200
+           )
+  par(mar = c(10.1, 10.1, 8.1, 4.1))
+  plot(NA,
+       xlim = c(-.1, 1),
+       ylim = c(-.1, 1.1),
+       xaxs = 'i',
+       yaxs = 'i',
+       xlab = NA,
+       ylab = NA,
+       axes = FALSE,
+       cex.lab = 3
+       )
+  axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+  axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+  mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+  mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+  ## ## eliminate infeasible region
+  ## rect(xleft = 0,
+  ##      xright = min(modelspace, na.rm = TRUE),
+  ##      ybottom = 0,
+  ##      ytop = 1,
+  ##      col = '#00000080',
+  ##      border = NA
+  ##      )
+  ## rect(xleft = max(modelspace, na.rm = TRUE),
+  ##      xright = 1,
+  ##      ybottom = 0,
+  ##      ytop = 1,
+  ##      col = '#00000080',
+  ##      border = NA
+  ##      )
+  for (i in 1:j){
+    xmin <- min(modelspace) + (i - 1) * xwidth
+    xmax <- min(modelspace) + i * xwidth
+    x <- modelspace[between(modelspace, xmin, xmax)]
+    x0 <- min(x)
+    x1 <- max(x)
+    y <- estimand[between(modelspace, xmin, xmax)]
+    ## method 1: min/max in each branch, plus a gap
+    lb.range.y0 <- head(y, 1) - ygap
+    lb.range.y1 <- tail(y, 1) - ygap
+    ub.range.y0 <- head(y, 1) + ygap
+    ub.range.y1 <- tail(y, 1) + ygap
+    ## method 2: median slope in each branch, plus a gap
+    dy.dx <- diff(y) / dx
+    dmed <- quantile(dy.dx, probs = .5, type = 1)
+    dmed.ind <- which(dy.dx == dmed)
+    dmed.x <- x[dmed.ind]
+    dmed.y <- y[dmed.ind]
+    lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+    lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+    ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+    ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+    ## plot
+    segments(x0 = x0,
+             x1 = x1,
+             y0 = min(lb.range.y0, lb.slope.y0),
+             y1 = min(lb.range.y1, lb.slope.y1),
+             lwd = 4,
+             col = red
+             )
+    ## segments(x0 = x0,
+    ##          x1 = x1,
+    ##          y0 = max(ub.range.y0, ub.slope.y0),
+    ##          y1 = max(ub.range.y1, ub.slope.y1),
+    ##          lwd = 4,
+    ##          col = red
+    ##          )
+  }
+  ## function to optimize
+  lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+  dev.off()
+}
+
+n <- 8
+xwidth <- diff(range(modelspace)) / n
+ygap <- .05
+CairoPNG(sprintf('2d_upperbound_function.png', j),
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## eliminate infeasible region
+## rect(xleft = 0,
+##      xright = min(modelspace, na.rm = TRUE),
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+## rect(xleft = max(modelspace, na.rm = TRUE),
+##      xright = 1,
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+## function to optimize
+lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+dev.off()
+
+for (j in 1:n){
+  CairoPNG(sprintf('2d_lowerbound_%s.png', j),
+           width = 1600,
+           height = 1200
+           )
+  par(mar = c(10.1, 10.1, 8.1, 4.1))
+  plot(NA,
+       xlim = c(-.1, 1),
+       ylim = c(-.1, 1.1),
+       xaxs = 'i',
+       yaxs = 'i',
+       xlab = NA,
+       ylab = NA,
+       axes = FALSE,
+       cex.lab = 3
+       )
+  axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+  axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+  mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+  mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+  ## ## eliminate infeasible region
+  ## rect(xleft = 0,
+  ##      xright = min(modelspace, na.rm = TRUE),
+  ##      ybottom = 0,
+  ##      ytop = 1,
+  ##      col = '#00000080',
+  ##      border = NA
+  ##      )
+  ## rect(xleft = max(modelspace, na.rm = TRUE),
+  ##      xright = 1,
+  ##      ybottom = 0,
+  ##      ytop = 1,
+  ##      col = '#00000080',
+  ##      border = NA
+  ##      )
+  for (i in 1:j){
+    xmin <- min(modelspace) + (i - 1) * xwidth
+    xmax <- min(modelspace) + i * xwidth
+    x <- modelspace[between(modelspace, xmin, xmax)]
+    x0 <- min(x)
+    x1 <- max(x)
+    y <- estimand[between(modelspace, xmin, xmax)]
+    ## method 1: min/max in each branch, plus a gap
+    lb.range.y0 <- head(y, 1) - ygap
+    lb.range.y1 <- tail(y, 1) - ygap
+    ub.range.y0 <- head(y, 1) + ygap
+    ub.range.y1 <- tail(y, 1) + ygap
+    ## method 2: median slope in each branch, plus a gap
+    dy.dx <- diff(y) / dx
+    dmed <- quantile(dy.dx, probs = .5, type = 1)
+    dmed.ind <- which(dy.dx == dmed)
+    dmed.x <- x[dmed.ind]
+    dmed.y <- y[dmed.ind]
+    lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+    lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+    ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+    ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+    ## plot
+    segments(x0 = x0,
+             x1 = x1,
+             y0 = min(lb.range.y0, lb.slope.y0),
+             y1 = min(lb.range.y1, lb.slope.y1),
+             lwd = 4,
+             col = red
+             )
+    ## segments(x0 = x0,
+    ##          x1 = x1,
+    ##          y0 = max(ub.range.y0, ub.slope.y0),
+    ##          y1 = max(ub.range.y1, ub.slope.y1),
+    ##          lwd = 4,
+    ##          col = red
+    ##          )
+  }
+  dev.off()
+}
+
+n <- 8
+xwidth <- diff(range(modelspace)) / n
+ygap <- .05
+CairoPNG('2d_lowerbound_function.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## eliminate infeasible region
+## rect(xleft = 0,
+##      xright = min(modelspace, na.rm = TRUE),
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+## rect(xleft = max(modelspace, na.rm = TRUE),
+##      xright = 1,
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = min(lb.range.y0, lb.slope.y0),
+           y1 = min(lb.range.y1, lb.slope.y1),
+           lwd = 4,
+           col = red
+           )
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = max(ub.range.y0, ub.slope.y0),
+  ##          y1 = max(ub.range.y1, ub.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+}
+## function to optimize
+lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+dev.off()
+
+CairoPNG('2d_lowerbound_branchbound_1.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## eliminate infeasible region
+## rect(xleft = 0,
+##      xright = min(modelspace, na.rm = TRUE),
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+## rect(xleft = max(modelspace, na.rm = TRUE),
+##      xright = 1,
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = min(lb.range.y0, lb.slope.y0),
+           y1 = min(lb.range.y1, lb.slope.y1),
+           lwd = 4,
+           col = red
+           )
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = max(ub.range.y0, ub.slope.y0),
+  ##          y1 = max(ub.range.y1, ub.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 4
+xmin <- min(modelspace) + (i - 1) * xwidth
+xmax <- min(modelspace) + i * xwidth
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+lb.primal.x <- x[round(length(x) / 2)]
+lb.primal.y <- y[round(length(y) / 2)]
+dev.off()
+
+CairoPNG('2d_lowerbound_branchbound_2.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## eliminate infeasible region
+## rect(xleft = 0,
+##      xright = min(modelspace, na.rm = TRUE),
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+## rect(xleft = max(modelspace, na.rm = TRUE),
+##      xright = 1,
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = min(lb.range.y0, lb.slope.y0),
+           y1 = min(lb.range.y1, lb.slope.y1),
+           lwd = 4,
+           col = red
+           )
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = max(ub.range.y0, ub.slope.y0),
+  ##          y1 = max(ub.range.y1, ub.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 4
+xmin <- min(modelspace) + (i - 1) * xwidth
+xmax <- min(modelspace) + i * xwidth
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+lines(x = 0:1,
+      y = rep(y[round(length(y) / 2)], 2),
+      col = blue,
+      lwd = 3,
+      lty = '99'
+      )
+dev.off()
+
+CairoPNG('2d_lowerbound_branchbound_3.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = min(lb.range.y0, lb.slope.y0),
+           y1 = min(lb.range.y1, lb.slope.y1),
+           lwd = 4,
+           col = red
+           )
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = max(ub.range.y0, ub.slope.y0),
+  ##          y1 = max(ub.range.y1, ub.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  if (i == 4){
+    lb.dual.x <- x1
+    lb.dual.y <- lb.slope.y1
+  }
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 4
+xmin <- min(modelspace) + (i - 1) * xwidth
+xmax <- min(modelspace) + i * xwidth
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+lines(x = 0:1,
+      y = rep(y[round(length(y) / 2)], 2),
+      col = blue,
+      lwd = 3,
+      lty = '99'
+      )
+## eliminate excluded region
+rect(xleft = 0,
+     xright = min(modelspace) + 3 * xwidth,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+rect(xleft = min(modelspace) + 5 * xwidth,
+     xright = 1,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+dev.off()
+
+CairoPNG('2d_lowerbound_branchbound_4.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = min(lb.range.y0, lb.slope.y0),
+           y1 = min(lb.range.y1, lb.slope.y1),
+           lwd = 4,
+           col = red
+           )
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = max(ub.range.y0, ub.slope.y0),
+  ##          y1 = max(ub.range.y1, ub.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  if (i == 4){
+    lb.dual.x <- x1
+    lb.dual.y <- lb.slope.y1
+  }
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 4
+xmin <- min(modelspace) + (i - 1) * xwidth
+xmax <- min(modelspace) + i * xwidth
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+points(lb.dual.x, lb.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+## eliminate excluded region
+rect(xleft = 0,
+     xright = min(modelspace) + 3 * xwidth,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+rect(xleft = min(modelspace) + 5 * xwidth,
+     xright = 1,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+dev.off()
+
+CairoPNG('2d_upperbound_branchbound_1.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## eliminate infeasible region
+## rect(xleft = 0,
+##      xright = min(modelspace, na.rm = TRUE),
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+## rect(xleft = max(modelspace, na.rm = TRUE),
+##      xright = 1,
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 7
+xmin <- min(modelspace) + (i - 1) * xwidth
+xmax <- min(modelspace) + i * xwidth
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+dev.off()
+
+CairoPNG('2d_upperbound_branchbound_2.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## eliminate infeasible region
+## rect(xleft = 0,
+##      xright = min(modelspace, na.rm = TRUE),
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+## rect(xleft = max(modelspace, na.rm = TRUE),
+##      xright = 1,
+##      ybottom = 0,
+##      ytop = 1,
+##      col = '#00000080',
+##      border = NA
+##      )
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 7
+xmin <- min(modelspace) + (i - 1) * xwidth
+xmax <- min(modelspace) + i * xwidth
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+lines(x = 0:1,
+      y = rep(y[round(length(y) / 2)], 2),
+      col = blue,
+      lwd = 3,
+      lty = '99'
+      )
+dev.off()
+
+CairoPNG('2d_upperbound_branchbound_3.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+for (i in 1:n){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 7
+xmin <- min(modelspace) + (i - 1) * xwidth
+xmax <- min(modelspace) + i * xwidth
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+lines(x = 0:1,
+      y = rep(y[round(length(y) / 2)], 2),
+      col = blue,
+      lwd = 3,
+      lty = '99'
+      )
+## eliminate excluded region
+rect(xleft = 0,
+     xright = min(modelspace) + 5 * xwidth,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+rect(xleft = min(modelspace) + 7 * xwidth,
+     xright = 1,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+dev.off()
+
+CairoPNG('2d_upperbound_branchbound_4.png' ,
+         width = 1600,
+         height = 1200
+         )
+ygap2 <- .025
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+for (i in c(1:5, 8)){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 6:7
+xmin <- min(modelspace) + min((i - 1) * xwidth)
+xmax <- min(modelspace) + max(i * xwidth)
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+## lines(x = 0:1,
+##       y = rep(median(y), 2),
+##       col = blue,
+##       lwd = 3,
+##       lty = '99'
+##       )
+## eliminate excluded region
+rect(xleft = 0,
+     xright = min(modelspace) + 5 * xwidth,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+rect(xleft = min(modelspace) + 7 * xwidth,
+     xright = 1,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+## branch further, tighten point spacing
+n2 <- 32
+xwidth2 <- diff(range(modelspace)) / n2
+dx2 <- .001
+modelspace2 <- seq(0, 1, dx2)
+estimand2 <- estimand_fun(modelspace2)
+for (i in 21:28){
+  xmin <- min(modelspace2) + (i - 1) * xwidth2
+  xmax <- min(modelspace2) + i * xwidth2
+  x <- modelspace2[between(modelspace2, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand2[between(modelspace2, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap2
+  lb.range.y1 <- tail(y, 1) - ygap2
+  ub.range.y0 <- head(y, 1) + ygap2
+  ub.range.y1 <- tail(y, 1) + ygap2
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx2
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap2 + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap2 + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap2 + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap2 + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+dev.off()
+
+CairoPNG('2d_upperbound_branchbound_5.png',
+         width = 1600,
+         height = 1200
+         )
+ygap2 <- .025
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+for (i in c(1:5, 8)){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 6:7
+xmin <- min(modelspace) + min((i - 1) * xwidth)
+xmax <- min(modelspace) + max(i * xwidth)
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+## lines(x = 0:1,
+##       y = rep(median(y), 2),
+##       col = blue,
+##       lwd = 3,
+##       lty = '99'
+##       )
+## eliminate excluded region
+rect(xleft = 0,
+     xright = min(modelspace) + 5 * xwidth,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+rect(xleft = min(modelspace) + 7 * xwidth,
+     xright = 1,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+## branch further, tighten point spacing
+n2 <- 32
+xwidth2 <- diff(range(modelspace)) / n2
+dx2 <- .001
+modelspace2 <- seq(0, 1, dx2)
+estimand2 <- estimand_fun(modelspace2)
+for (i in 21:28){
+  xmin <- min(modelspace2) + (i - 1) * xwidth2
+  xmax <- min(modelspace2) + i * xwidth2
+  x <- modelspace2[between(modelspace2, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand2[between(modelspace2, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap2
+  lb.range.y1 <- tail(y, 1) - ygap2
+  ub.range.y0 <- head(y, 1) + ygap2
+  ub.range.y1 <- tail(y, 1) + ygap2
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx2
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap2 + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap2 + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap2 + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap2 + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+i <- 26
+xmin <- min(modelspace2) + (i - 1) * xwidth2
+xmax <- min(modelspace2) + i * xwidth2
+x <- modelspace2[between(modelspace2, xmin, xmax)]
+y <- estimand2[between(modelspace2, xmin, xmax)]
+points(x[round(length(x) / 2)], y[round(length(y) / 2)], col = blue, pch = 1, cex = 3, lwd = 4)
+ub.primal.x <- median(x)
+ub.primal.y <- median(y)
+## ## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+dev.off()
+
+CairoPNG('2d_upperbound_branchbound_6.png',
+         width = 1600,
+         height = 1200
+         )
+ygap2 <- .025
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+for (i in c(1:5, 8)){
+  xmin <- min(modelspace) + (i - 1) * xwidth
+  xmax <- min(modelspace) + i * xwidth
+  x <- modelspace[between(modelspace, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand[between(modelspace, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap
+  lb.range.y1 <- tail(y, 1) - ygap
+  ub.range.y0 <- head(y, 1) + ygap
+  ub.range.y1 <- tail(y, 1) + ygap
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+}
+## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+i <- 6:7
+xmin <- min(modelspace) + min((i - 1) * xwidth)
+xmax <- min(modelspace) + max(i * xwidth)
+x <- modelspace[between(modelspace, xmin, xmax)]
+y <- estimand[between(modelspace, xmin, xmax)]
+## lines(x = 0:1,
+##       y = rep(median(y), 2),
+##       col = blue,
+##       lwd = 3,
+##       lty = '99'
+##       )
+## eliminate excluded region
+rect(xleft = 0,
+     xright = min(modelspace) + 5 * xwidth,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+rect(xleft = min(modelspace) + 7 * xwidth,
+     xright = 1,
+     ybottom = 0,
+     ytop = 1,
+     col = '#00000080',
+     border = NA
+     )
+## branch further, tighten point spacing
+n2 <- 32
+xwidth2 <- diff(range(modelspace)) / n2
+dx2 <- .001
+modelspace2 <- seq(0, 1, dx2)
+estimand2 <- estimand_fun(modelspace2)
+for (i in 21:28){
+  xmin <- min(modelspace2) + (i - 1) * xwidth2
+  xmax <- min(modelspace2) + i * xwidth2
+  x <- modelspace2[between(modelspace2, xmin, xmax)]
+  x0 <- min(x)
+  x1 <- max(x)
+  y <- estimand2[between(modelspace2, xmin, xmax)]
+  ## method 1: min/max in each branch, plus a gap
+  lb.range.y0 <- head(y, 1) - ygap2
+  lb.range.y1 <- tail(y, 1) - ygap2
+  ub.range.y0 <- head(y, 1) + ygap2
+  ub.range.y1 <- tail(y, 1) + ygap2
+  ## method 2: median slope in each branch, plus a gap
+  dy.dx <- diff(y) / dx2
+  dmed <- quantile(dy.dx, probs = .5, type = 1)
+  dmed.ind <- which(dy.dx == dmed)
+  dmed.x <- x[dmed.ind]
+  dmed.y <- y[dmed.ind]
+  lb.slope.y0 <- max(0, dmed.y - ygap2 + dmed * (x0 - dmed.x))
+  lb.slope.y1 <- max(0, dmed.y - ygap2 + dmed * (x1 - dmed.x))
+  ub.slope.y0 <- dmed.y + ygap2 + dmed * (x0 - dmed.x)
+  ub.slope.y1 <- dmed.y + ygap2 + dmed * (x1 - dmed.x)
+  ## plot
+  ## segments(x0 = x0,
+  ##          x1 = x1,
+  ##          y0 = min(lb.range.y0, lb.slope.y0),
+  ##          y1 = min(lb.range.y1, lb.slope.y1),
+  ##          lwd = 4,
+  ##          col = red
+  ##          )
+  segments(x0 = x0,
+           x1 = x1,
+           y0 = max(ub.range.y0, ub.slope.y0),
+           y1 = max(ub.range.y1, ub.slope.y1),
+           lwd = 4,
+           col = red
+           )
+if (i == 26){
+  ub.dual.x <- x1
+  ub.dual.y <- max(ub.range.y1, ub.slope.y1)
+}
+}
+points(ub.primal.x, ub.primal.y, col = blue, pch = 1, cex = 3, lwd = 4)
+points(ub.dual.x, ub.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+dev.off()
+
+CairoPNG('2d_upperbound_epsilonsharp_1.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+## identified dual extremes
+points(ub.dual.x, ub.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+points(lb.dual.x, lb.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+## identified feasible primal extremes
+points(ub.primal.x,
+       ub.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+points(lb.primal.x,
+       lb.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+dev.off()
+
+CairoPNG('2d_upperbound_epsilonsharp_2.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+## identified dual extremes
+points(ub.dual.x, ub.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+points(lb.dual.x, lb.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+## identified feasible primal extremes
+points(ub.primal.x,
+       ub.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+points(lb.primal.x,
+       lb.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+text(ub.primal.x - .025,
+     ub.primal.y,
+     labels = 'max known feasible point',
+     col = blue,
+     adj = 1,
+     cex = 3
+     )
+text(lb.primal.x - .025,
+     lb.primal.y,
+     labels = 'min known feasible point',
+     col = blue,
+     adj = 1,
+     cex = 3
+     )
+dev.off()
+
+CairoPNG('2d_upperbound_epsilonsharp_3.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+## identified dual extremes
+points(ub.dual.x, ub.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+points(lb.dual.x, lb.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+text(ub.dual.x - .025,
+     ub.dual.y,
+     labels = 'min guaranteed valid upper bound',
+     col = red,
+     adj = 1,
+     cex = 3
+     )
+text(lb.dual.x - .025,
+     lb.dual.y,
+     labels = 'max guaranteed valid lower bound',
+     col = red,
+     adj = 1,
+     cex = 3
+     )
+## identified feasible primal extremes
+points(ub.primal.x,
+       ub.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+points(lb.primal.x,
+       lb.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+dev.off()
+
+CairoPNG('2d_upperbound_epsilonsharp_4.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+## identified dual extremes
+points(ub.dual.x, ub.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+points(lb.dual.x, lb.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+## identified feasible primal extremes
+points(ub.primal.x,
+       ub.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+points(lb.primal.x,
+       lb.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+## primal inner bounds
+arrows(x0 = .7,
+       x1 = .7,
+       y0 = lb.primal.y,
+       y1 = ub.primal.y,
+       code = 3,
+       angle = 90,
+       length = .4,
+       lwd = 6,
+       col = blue,
+       lend = 1
+       )
+segments(x0 = ub.primal.x,
+         x1 = .7,
+         y0 = ub.primal.y,
+         y1 = ub.primal.y,
+         lty = '99',
+         lwd = 2,
+         col = blue
+         )
+segments(x0 = .7,
+         x1 = lb.primal.x,
+         y0 = lb.primal.y,
+         y1 = lb.primal.y,
+         lty = '99',
+         lwd = 2,
+         col = blue
+         )
+dev.off()
+
+CairoPNG('2d_upperbound_epsilonsharp_5.png',
+         width = 1600,
+         height = 1200
+         )
+par(mar = c(10.1, 10.1, 8.1, 4.1))
+plot(NA,
+     xlim = c(-.1, 1),
+     ylim = c(-.1, 1.1),
+     xaxs = 'i',
+     yaxs = 'i',
+     xlab = NA,
+     ylab = NA,
+     axes = FALSE,
+     cex.lab = 3
+     )
+axis(1, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+axis(2, at = c(0, 1), labels = NA, cex.axis = 2, mgp = c(0, 3, 0))
+mtext('Principal strata distribution', side = 1, at = .5, line = 7, cex = 3)
+mtext('Estimand', side = 2, at = .5, line = 7, cex = 3)
+## ## function to optimize
+## lines(modelspace, estimand, lty = '99', lwd = 4, col = blue)
+## identified dual extremes
+points(ub.dual.x, ub.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+points(lb.dual.x, lb.dual.y, col = red, pch = 4, cex = 3, lwd = 4)
+## dual outer bounds
+arrows(x0 = .65,
+       x1 = .65,
+       y0 = lb.dual.y,
+       y1 = ub.dual.y,
+       code = 3,
+       angle = 90,
+       length = .4,
+       lwd = 6,
+       col = red,
+       lend = 1
+       )
+segments(x0 = ub.dual.x,
+         x1 = .65,
+         y0 = ub.dual.y,
+         y1 = ub.dual.y,
+         lty = '99',
+         lwd = 2,
+         col = red
+         )
+segments(x0 = lb.dual.x,
+         x1 = .65,
+         y0 = lb.dual.y,
+         y1 = lb.dual.y,
+         lty = '99',
+         lwd = 2,
+         col = red
+         )
+## identified feasible primal extremes
+points(ub.primal.x,
+       ub.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+points(lb.primal.x,
+       lb.primal.y ,
+       col = blue,
+       pch = 1,
+       cex = 3,
+       lwd = 4
+       )
+## primal inner bounds
+arrows(x0 = .7,
+       x1 = .7,
+       y0 = lb.primal.y,
+       y1 = ub.primal.y,
+       code = 3,
+       angle = 90,
+       length = .4,
+       lwd = 6,
+       col = blue,
+       lend = 1
+       )
+segments(x0 = ub.primal.x,
+         x1 = .7,
+         y0 = ub.primal.y,
+         y1 = ub.primal.y,
+         lty = '99',
+         lwd = 2,
+         col = blue
+         )
+segments(x0 = .7,
+         x1 = lb.primal.x,
+         y0 = lb.primal.y,
+         y1 = lb.primal.y,
+         lty = '99',
+         lwd = 2,
+         col = blue
+         )
+dev.off()

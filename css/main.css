@@ -12,6 +12,9 @@ body {
   -moz-font-feature-settings: "liga" on;
 }
 
+.flex-container {
+    justify-content: space-between;
+}
 a {
   outline: none;
 }

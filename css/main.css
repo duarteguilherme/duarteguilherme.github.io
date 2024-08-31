@@ -38,10 +38,10 @@ code .MathJax {
   color: #c7caff;
   border-bottom: 1px solid #eaeaea;
 }
-#linkheader {
+.headlink {
   color: #c7caff;
 }
-#linkheader:visited {
+.headlink:visited {
   color: #c7caff;
 }
 

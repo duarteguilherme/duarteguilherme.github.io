@@ -1,4 +1,28 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+@font-face {
+    font-family: 'Raleway-Regular';
+    src: url('../fonts/Raleway-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Raleway-Black';
+    src: url('../fonts/Raleway-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Merriweather-Regular';
+    src: url('../fonts/Merriweather-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Merriweather-Black';
+    src: url('../fonts/Merriweather-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 
 html {
   position: relative;
@@ -7,8 +31,8 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  font-family: 'Open Sans', 'sans-serif';
-  font-size: 14px;
+  font-family: 'Raleway-Regular', 'sans-serif';
+  font-size: 12px;
   margin-bottom: 70px;
 }
 .footer {
@@ -21,10 +45,17 @@ body {
   padding-bottom: 1rem;
 //  padding-top: 1rem;
 }
+.titlehr {
+    font-size: 24px;
+    font-family: "Raleway-Black";
+}
 
 
 body > .container {
   padding: 75px 15px 0;
+}
+h1, h2, h3, h4, h5, h6, .nav, .article-duration, .archive-item-link, .footer {
+  font-family: 'Merriweather-Bold', sans-serif;
 }
 
 .navbar-brand {

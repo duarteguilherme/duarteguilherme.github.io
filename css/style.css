@@ -82,6 +82,12 @@ img {
   height: auto;
 }
 
+#linkphoto {
+  width: 165px;
+  max-width: none;
+  height: auto;
+}
+
 .nopadding {
   padding: 0 !important;
   margin: 0 !important;

@@ -21,57 +21,60 @@
 
 <link rel="stylesheet" href="../css/fonts.css" media="all">
 <link rel="stylesheet" href="../css/main.css" media="all">
+<link rel="stylesheet" href="../css/style.css" media="all">
 
 
 
   </head>
   <body>
     <div class="wrapper">
-      <header class="header">
-        <nav class="nav">
-  <a href="../" class="nav-logo">
-    <img src="../images/logo.png"
-         width="50"
-         height="50"
-         alt="Logo">
-  </a>
-
-  <ul class="nav-links">
-    
-    <li><a href="../">Home</a></li>
-    
-    <li><a href="../about/">About</a></li>
-
-    <li><a href="../cv/cv.pdf">CV</a></li>
-    
-    <li><a href="https://github.com/duarteguilherme">GitHub</a></li>
-    
-    <li><a href="https://twitter.com/guilhermejd1">Twitter</a></li>
-    
-  </ul>
-</nav>
-
-      </header>
+      <iframe src="../header.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
 
 
 <main class="content" role="main">
-
-  <article class="article">
-    
-
-    <h1 class="article-title">About</h1>
-
-    
-
-    <div class="article-content">
-      <p>Hi. My name is Guilherme Duarte. I work as a data scientist for a news website in Brazil. I&rsquo;m also a Doctor in Constitutional Law at University of Sao Paulo (Brazil). I apply models to political and general phenomena in order to understand its main features. I&rsquo;m addicted to R. I program in python as well. My interests are: programming, law, political science, methodology, statistics, data science, and music (seriously).</p>
-
+  <section class="terminal-window hero-panel" id="about">
+    <div class="terminal-bar">
+      <span class="terminal-label">About</span>
     </div>
-  </article>
+    <div class="terminal-body about-body">
+      <div class="about-photo">
+        <img src="../images/headshot.jpg" alt="Portrait of Guilherme Duarte">
+      </div>
+      <div class="about-text">
+        <p class="terminal-output">Hi. My name is Guilherme Duarte. I work as a data scientist for a news website in Brazil. I&rsquo;m also a Doctor in Constitutional Law at University of Sao Paulo (Brazil). I apply models to political and general phenomena in order to understand its main features.</p>
+        <p class="terminal-output">I&rsquo;m addicted to R and also program in Python. My interests are programming, law, political science, methodology, statistics, data science, and music (seriously).</p>
+      </div>
+    </div>
+  </section>
 
-  
-
-
+  <section class="terminal-window" id="research">
+    <div class="terminal-bar">
+      <div class="terminal-dots">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+      </div>
+      <span class="terminal-label">Research</span>
+    </div>
+    <div class="terminal-body">
+      <div id="works">
+        <h2 class="titlehr">Peer-Reviewed Articles</h2>
+        <p>Guilherme Duarte, Noam Finkelstein, Dean Knox, Jonathan Mummolo, and Ilya Shpitser. 2023. <a href="https://www.tandfonline.com/doi/full/10.1080/01621459.2023.2216909">An Automated Approach to Causal Inference in Discrete Settings."</a> <b>Journal of American Statistical Association.</b> (Theory and Methods).</p>
+        <p>Robert Myles McDonnell, Guilherme Jardim Duarte, Danilo Freire. 2019. <a href="https://osf.io/n5jd8/">"congressbr: An R Package for Analysing Data from Brazil&rsquo;s Chamber of Deputies and Federal Senate."</a> <b>Latin American Research Review.</b> (Research note)</p>
+        <h2 class="titlehr">Job Market Paper</h2>
+        <p>Guilherme Duarte. 2024. <a href="https://www.dropbox.com/scl/fi/9ared32pibxwf7r2yj8kt/Sensitivity_Analysis_paper.pdf?rlkey=ofc9j60rqybtqnirf8aa5occa&st=9shmgdf7&dl=0">"A Unified Approach for Assessing Sensitivity to Violations of Causal Assumptions."</a></p>
+        <h2 class="titlehr">Submitted</h2>
+        <p>Guilherme Duarte. 2024. <a href="https://arxiv.org/abs/2405.09797">"Identification of Single-Treatment Effects in Factorial Experiments."</a></p>
+        <h2 class="titlehr">In Progress</h2>
+        <p>Kai Cooper, Guilherme Duarte, Luke Keele, Dean Knox, Kennedy Mattes, Jonathan Mummolo. 2024. "Evaluating the Validity and Robustness of Instrumental-Variable Analyses."</p>
+        <p>Guilherme Duarte. 2024. "A Comprehensive Approach for Sensitivity Analysis."</p>
+        <p>Guilherme Duarte. 2024. "Fast Algorithm for Closed-form Partial Identification."</p>
+        <p>Guilherme Duarte, Dean Knox. 2023. "Imperfect Data and Optimal Allocation of Data-Collection Resources."</p>
+        <p>Guilherme Duarte. "A General Framework for Transportability". 2023.</p>
+        <p>Guilherme Duarte, Luke Keele, Dean Knox, Jonathan Mummolo. 2022. "Learning From Imperfect Identification -- Automating Causal Inference When Classic Assumptions Fail".</p>
+      </div>
+    </div>
+  </section>
 </main>
 
       <footer class="footer">
@@ -93,4 +96,3 @@
     
   </body>
 </html>
-

@@ -26,37 +26,57 @@
   </head>
   <body>
     <div class="wrapper">
-          <iframe src="header.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+      <iframe src="header.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
 <main class="content" role="main">
 
-  <article class="article">
-    
-
-
-      <div id = "main" style = "display: flex;" >
-    <div id = "photo" style="display: flex; padding-right: 10px;">
-            <img id="linkphoto" src="../images/logo.png" width="300px" height="280px">
-
-        </div>
-        <div style = "display: flex; align-items: center; ">
-            <br><br><br><br> <span> I am Guilherme Duarte (pronounced Gheel-YER-me). I am currently a Postdoctoral Researcher in the Department of Government at Harvard University, where I will assume the position of Assistant Professor effective July 2026. </span>
-      </div>
-      </div>
-		<div style = "display: block;">
-            <p> I hold a Ph.D. from the Wharton School at the University of Pennsylvania (2025). </p>
-<p>
-My primary research interests include causal inference and machine learning. I have developed general algorithms for partial identification and also investigated issues related to sensitivity analysis, transportability, factorial experiments, and causal inference automation. In the past, I have worked in journalism and data science. </p>
-
-<p> My work has received a Pulitzer Prize for Explanatory Reporting (2017), a Society for Political Methodology Best Poster Award (2023), a Society for Causal Inference Tom Ten Have Award (2024), and a Society for Political Methodology John T. Williams Dissertation Prize (2024). </p>
-<p>  Thanks for visiting! </p>
-
-		</div>
-
+  <section class="terminal-window hero-panel">
+    <div class="terminal-bar">
+      <span class="terminal-label">About</span>
     </div>
-  </article>
+    <div class="terminal-body about-body">
+      <div class="about-photo">
+        <img src="../images/headshot.jpg" alt="Portrait of Guilherme Duarte">
+      </div>
+      <div class="about-text">
+        <p class="terminal-output">I am Guilherme Duarte (pronounced Gheel-YER-me). I am currently a Postdoctoral Researcher in the Department of Government at Harvard University and will join the faculty as an Assistant Professor effective July 2026.</p>
+        <p class="terminal-output">I hold a Ph.D. from the Wharton School at the University of Pennsylvania (2025).</p>
+        <p class="terminal-output">My primary research interests include causal inference and machine learning. I have developed general algorithms for partial identification and also investigated issues related to sensitivity analysis, transportability, factorial experiments, and causal inference automation. In the past, I have worked in journalism and data science.</p>
+        <p class="terminal-output">My work has received a Pulitzer Prize for Explanatory Reporting (2017), a Society for Political Methodology Best Poster Award (2023), a Society for Causal Inference Tom Ten Have Award (2024), and a Society for Political Methodology John T. Williams Dissertation Prize (2024).</p>
+        <p class="terminal-output">Thanks for visiting!</p>
+      </div>
+    </div>
+  </section>
 
-  
-
+  <section class="terminal-window">
+    <div class="terminal-bar">
+      <span class="terminal-label">Links</span>
+    </div>
+    <div class="terminal-body">
+      <div class="contact-panel">
+        <div class="contact-item">Email → <a class="headlink" href="mailto:gjduarte@fas.harvard.edu">gjduarte@fas.harvard.edu</a></div>
+        <div class="contact-item">Github → <a class="headlink" href="https://github.com/duarteguilherme">github.com/duarteguilherme</a></div>
+        <div class="contact-item">Cambridge, MA</div>
+      </div>
+      <div class="link-grid">
+        <a class="link-card" href="../about/#research">
+          <span class="link-label">Research</span>
+          <span class="link-desc">Causal inference, sensitivity analysis, automation.</span>
+        </a>
+        <a class="link-card" href="../cv/cv.pdf">
+          <span class="link-label">CV</span>
+          <span class="link-desc">Full academic and professional record (PDF).</span>
+        </a>
+        <a class="link-card" href="../posts/">
+          <span class="link-label">Writing</span>
+          <span class="link-desc">Technical notes and posts.</span>
+        </a>
+        <a class="link-card" href="https://github.com/duarteguilherme">
+          <span class="link-label">Software</span>
+          <span class="link-desc">Open-source tools and replicable code.</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
 </main>
 
@@ -69,4 +89,3 @@ My primary research interests include causal inference and machine learning. I h
     
   </body>
 </html>
-

@@ -8,10 +8,7 @@
 
 <title>Research - Guilherme Duarte</title>
 <meta property="og:title" content="Research - Guilherme Duarte">
-<meta http-equiv="refresh" content="0; url=../about/#research">
-<script>
-  window.location.replace("../about/#research");
-</script>
+
 
 
   
@@ -22,24 +19,83 @@
 
 
 
-<link rel="stylesheet" href="../css/style.css" media="all">
+<link rel="stylesheet" href="../css/fonts.css" media="all">
 <link rel="stylesheet" href="../css/main.css" media="all">
+<link rel="stylesheet" href="../css/style.css" media="all">
+
 
 
   </head>
   <body>
     <div class="wrapper">
-      <main class="content" role="main">
-        <section class="terminal-window" style="margin-top: 80px;">
-          <div class="terminal-bar">
-            <span class="terminal-label">Redirecting</span>
-          </div>
-          <div class="terminal-body">
-            <p class="terminal-output">The research listings now live on the <a href="../about/#research">About page</a>.</p>
-            <p class="terminal-output">If you are not redirected automatically, please follow the link above.</p>
-          </div>
-        </section>
-      </main>
+      <iframe src="../header.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+
+
+<main class="content" role="main">
+  <section class="terminal-window hero-panel" id="about">
+    <div class="terminal-bar">
+      <span class="terminal-label">About</span>
     </div>
+    <div class="terminal-body about-body">
+      <div class="about-photo">
+        <img src="../images/headshot.jpg" alt="Portrait of Guilherme Duarte">
+      </div>
+      <div class="about-text">
+        <p class="terminal-output">I am Guilherme Duarte (pronounced Gheel-YER-me). I am currently a Postdoctoral Researcher in the Department of Government at Harvard University and will join the faculty as an Assistant Professor effective July 2026.</p>
+        <p class="terminal-output">I hold a Ph.D. from the Wharton School at the University of Pennsylvania (2025).</p>
+        <p class="terminal-output">My primary research interests include causal inference and machine learning. I have developed general algorithms for partial identification and also investigated issues related to sensitivity analysis, transportability, factorial experiments, and causal inference automation. In the past, I have worked in journalism and data science.</p>
+        <p class="terminal-output">My work has received a Pulitzer Prize for Explanatory Reporting (2017), a Society for Political Methodology Best Poster Award (2023), a Society for Causal Inference Tom Ten Have Award (2024), and a Society for Political Methodology John T. Williams Dissertation Prize (2024).</p>
+        <p class="terminal-output">Thanks for visiting!</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="terminal-window" id="research">
+    <div class="terminal-bar">
+      <div class="terminal-dots">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+      </div>
+      <span class="terminal-label">Research</span>
+    </div>
+    <div class="terminal-body">
+      <div id="works">
+        <h2 class="titlehr">Peer-Reviewed Articles</h2>
+        <p>Guilherme Duarte, Noam Finkelstein, Dean Knox, Jonathan Mummolo, and Ilya Shpitser. 2023. <a href="https://www.tandfonline.com/doi/full/10.1080/01621459.2023.2216909">An Automated Approach to Causal Inference in Discrete Settings."</a> <b>Journal of American Statistical Association.</b> (Theory and Methods).</p>
+        <p>Robert Myles McDonnell, Guilherme Jardim Duarte, Danilo Freire. 2019. <a href="https://osf.io/n5jd8/">"congressbr: An R Package for Analysing Data from Brazil&rsquo;s Chamber of Deputies and Federal Senate."</a> <b>Latin American Research Review.</b> (Research note)</p>
+        <h2 class="titlehr">Job Market Paper</h2>
+        <p>Guilherme Duarte. 2024. <a href="https://www.dropbox.com/scl/fi/9ared32pibxwf7r2yj8kt/Sensitivity_Analysis_paper.pdf?rlkey=ofc9j60rqybtqnirf8aa5occa&st=9shmgdf7&dl=0">"A Unified Approach for Assessing Sensitivity to Violations of Causal Assumptions."</a></p>
+        <h2 class="titlehr">Submitted</h2>
+        <p>Guilherme Duarte. 2024. <a href="https://arxiv.org/abs/2405.09797">"Identification of Single-Treatment Effects in Factorial Experiments."</a></p>
+        <h2 class="titlehr">In Progress</h2>
+        <p>Kai Cooper, Guilherme Duarte, Luke Keele, Dean Knox, Kennedy Mattes, Jonathan Mummolo. 2024. "Evaluating the Validity and Robustness of Instrumental-Variable Analyses."</p>
+        <p>Guilherme Duarte. 2024. "A Comprehensive Approach for Sensitivity Analysis."</p>
+        <p>Guilherme Duarte. 2024. "Fast Algorithm for Closed-form Partial Identification."</p>
+        <p>Guilherme Duarte, Dean Knox. 2023. "Imperfect Data and Optimal Allocation of Data-Collection Resources."</p>
+        <p>Guilherme Duarte. "A General Framework for Transportability". 2023.</p>
+        <p>Guilherme Duarte, Luke Keele, Dean Knox, Jonathan Mummolo. 2022. "Learning From Imperfect Identification -- Automating Causal Inference When Classic Assumptions Fail".</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="../index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="../images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+    
+
+    
   </body>
 </html>

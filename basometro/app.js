@@ -15,9 +15,7 @@ for (const [key, label, first, last, since] of [
     terms.push({file: "current-" + key, label: label + " · Câmara", files, since, group: "Por governo"});
   }
 }
-terms.push(...annual.map(t => ({...t, group: "Câmara por ano"})));
-terms.push(...(window.senateTerms || []).map(t => ({...t, group: "Senado por governo"})));
-terms.push(...(window.archiveTerms || []).map(t => ({...t, group: "Acervo histórico"})));
+terms.push(...annual, ...(window.senateTerms || []), ...(window.archiveTerms || []));
 const format = new Intl.NumberFormat("pt-BR");
 const percent = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 1});
 const dateLabel = date => date.slice(0, 10).split("-").reverse().join("/");
@@ -404,10 +402,13 @@ new ResizeObserver(() => {
 const periods = new Map();
 for (const t of terms) {
   const [name,chamber] = t.label.split(" · ");
-  const group = t.file.startsWith("archive-") ? "Acervo histórico" : /^\d{4}$/.test(name) ? "Por ano" : "Por governo";
+  const group = /^\d{4}$/.test(name) ? "Por ano" : "Por governo";
   const key = group + "|" + name;
   if (!periods.has(key)) periods.set(key,{group,name,chambers:new Map()});
-  periods.get(key).chambers.set(chamber,t.file);
+  // The audited annual series takes precedence where the same chamber
+  // and government also has a partial historical edition.
+  const chambers = periods.get(key).chambers;
+  if (!chambers.has(chamber)) chambers.set(chamber,t.file);
 }
 const groups = new Map();
 for (const [key,p] of periods) {
@@ -427,11 +428,12 @@ $("term").onchange = () => changePeriod();
 $("house").onchange = () => openTerm(periods.get($("term").value).chambers.get($("house").value));
 const initialBase = new URLSearchParams(window.location?.search).get("base");
 let initialChamber;
-for (const [key, period] of periods) for (const [chamber,file] of period.chambers) {
-  if (file.replace(/\.js$/, "") === initialBase) {
-    $("term").value = key;
-    initialChamber = chamber;
-  }
+const initialTerm = terms.find(t => t.file.replace(/\.js$/, "") === initialBase);
+if (initialTerm) {
+  const [name,chamber] = initialTerm.label.split(" · ");
+  const group = /^\d{4}$/.test(name) ? "Por ano" : "Por governo";
+  $("term").value = group + "|" + name;
+  initialChamber = chamber;
 }
 if (terms.length) changePeriod(initialChamber);
 else $("status").textContent = "Nenhuma base encontrada.";

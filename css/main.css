@@ -472,3 +472,9 @@ p {
 .headlink {
   color: inherit;
 }
+
+.academic-home { font-size: 16px; }
+.academic-home .about-photo { flex-basis: 128px; }
+.academic-home .about-text { min-width: 0; }
+.academic-home .terminal-label { margin: 0; }
+.academic-home .terminal-body p:last-child { margin-bottom: 0; }

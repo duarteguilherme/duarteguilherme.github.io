@@ -15,7 +15,9 @@ for (const [key, label, first, last, since] of [
     terms.push({file: "current-" + key, label: label + " · Câmara", files, since, group: "Por governo"});
   }
 }
-terms.push(...annual, ...(window.senateTerms || []), ...(window.archiveTerms || []));
+terms.push(...annual.map(t => ({...t, group: "Por ano"})));
+terms.push(...(window.senateTerms || []).map(t => ({...t, group: "Por governo"})));
+terms.push(...(window.archiveTerms || []).map(t => ({...t, group: "Por governo"})));
 const format = new Intl.NumberFormat("pt-BR");
 const percent = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 1});
 const dateLabel = date => date.slice(0, 10).split("-").reverse().join("/");
@@ -41,6 +43,8 @@ function colors(party) { return partyColors.get(party) || "#aaa"; }
 function compareParties(a,b) { return partyOrder.indexOf(a) - partyOrder.indexOf(b); }
 let dataset, mode = "parties", selection = null, timer = null, periodRows = [], frame = 0;
 let activeFile = "";
+let termData;
+let rollsByType = new Map();
 function stop() {
   clearInterval(timer);
   timer = null;
@@ -57,6 +61,7 @@ function openTerm(file) {
   stop();
   activeFile = file;
   dataset = null;
+  $("proposalType").disabled = true;
   $("status").hidden = false;
   $("status").textContent = "Carregando votações…";
   $("dashboard").hidden = true;
@@ -96,9 +101,6 @@ function displayTerm(data) {
   }
   dataset = data;
   const parties = new Set();
-  $("jump").replaceChildren(...data.rolls.map((roll,i) =>
-    new Option(dateLabel(roll.date) + " · " + roll.title.slice(0, 160), i)));
-  makeStrip(data.rolls);
   for (const roll of data.rolls) for (const ballot of roll.votes) parties.add(ballot[1]);
   const term = terms.find(t => t.file === activeFile);
   const archive = term.file.match(/^archive-(lula|dilma|temer)([12])/);
@@ -120,28 +122,52 @@ function displayTerm(data) {
   partyColors = new Map(complete.map((p,i) => [p, palette[Math.floor(i * palette.length / complete.length)]]));
   resetFilters();
   buildFilterRails();
+  termData = data;
+  rollsByType = new Map();
+  for (const roll of data.rolls) {
+    const type = activeFile.startsWith("current-")
+      ? window.camaraProposalTypes[roll.id.split("-")[0]]
+      : roll.title.match(/^([A-Z]+)\s+\d/)?.[1];
+    const key = type || "Sem tipo identificado";
+    if (!rollsByType.has(key)) rollsByType.set(key, []);
+    rollsByType.get(key).push(roll);
+  }
+  const types = [...rollsByType.keys()].sort();
+  $("proposalType").replaceChildren(new Option("Todos", ""), ...types.map(type => new Option(type, type)));
+  $("proposalType").disabled = false;
+  $("senateMethod").hidden = term.chamber !== "Senado";
+  $("coverage").textContent = term.label + " · " + format.format(data.rolls.length) + " votações de " + dateLabel(data.rolls[0].date) + " a " + dateLabel(data.rolls.at(-1).date) + ".";
+  $("dashboard").hidden = false;
+  $("status").hidden = true;
+  applyProposalType();
+}
+$("proposalType").onchange = applyProposalType;
+function applyProposalType() {
+  stop();
+  cancelAnimationFrame(frame);
+  const rolls = rollsByType.get($("proposalType").value) || termData.rolls;
+  dataset = {people: termData.people, rolls};
+  $("jump").replaceChildren(...rolls.map((roll,i) =>
+    new Option(dateLabel(roll.date) + " · " + roll.title.slice(0, 160), i)));
+  makeStrip(rolls);
   monthData = [];
   start = 0;
-  end = data.rolls.length - 1;
+  end = rolls.length - 1;
   if (slider) slider.destroy();
   slider = noUiSlider.create($("interval"), {
     start: [start,end], range: {min: 0, max: Math.max(1,end)}, step: 1,
     connect: true, animate: false, behaviour: "tap-drag",
     handleAttributes: [{"aria-label":"Início do período"},{"aria-label":"Fim do período"}],
-    ariaFormat: {to: i => dateLabel(data.rolls[Math.min(endIndex(), Math.round(i))].date), from: Number}
+    ariaFormat: {to: i => dateLabel(rolls[Math.min(endIndex(), Math.round(i))].date), from: Number}
   });
-  if (data.rolls.length === 1) slider.disable();
+  if (rolls.length === 1) slider.disable();
   slider.on("slide", (_values, _handle, values) => {
     stop();
     [start,end] = values.map(Math.round);
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(aggregate);
   });
-  $("play").disabled = data.rolls.length === 1;
-  $("coverage").textContent = term.label + " · " + format.format(data.rolls.length) + " votações de " + dateLabel(data.rolls[0].date) + " a " + dateLabel(data.rolls.at(-1).date) + ".";
-  $("senateMethod").hidden = term.chamber !== "Senado";
-  $("dashboard").hidden = false;
-  $("status").hidden = true;
+  $("play").disabled = rolls.length === 1;
   aggregate();
 }
 function makeStrip(rolls) {
@@ -402,13 +428,9 @@ new ResizeObserver(() => {
 const periods = new Map();
 for (const t of terms) {
   const [name,chamber] = t.label.split(" · ");
-  const group = /^\d{4}$/.test(name) ? "Por ano" : "Por governo";
-  const key = group + "|" + name;
-  if (!periods.has(key)) periods.set(key,{group,name,chambers:new Map()});
-  // The audited annual series takes precedence where the same chamber
-  // and government also has a partial historical edition.
-  const chambers = periods.get(key).chambers;
-  if (!chambers.has(chamber)) chambers.set(chamber,t.file);
+  const key = t.group + "|" + name;
+  if (!periods.has(key)) periods.set(key,{group:t.group,name,series:[]});
+  periods.get(key).series.push({file:t.file,chamber});
 }
 const groups = new Map();
 for (const [key,p] of periods) {
@@ -418,22 +440,26 @@ for (const [key,p] of periods) {
   }
   groups.get(p.group).append(new Option(p.name,key));
 }
-function changePeriod(preferredChamber) {
-  const p = periods.get($("term").value), previous = preferredChamber || $("house").value;
-  $("house").replaceChildren(...[...p.chambers.keys()].map(c => new Option(c === "Senado" ? "no Senado" : "na Câmara",c)));
-  if (p.chambers.has(previous)) $("house").value = previous;
-  openTerm(p.chambers.get($("house").value));
+function changePeriod(preferredFile) {
+  const period = periods.get($("term").value);
+  const previousChamber = $("house").selectedOptions[0]?.dataset.chamber;
+  const options = period.series.map(({file,chamber}) => {
+    let label = chamber === "Senado" ? "no Senado" : "na Câmara";
+    if (file.startsWith("archive-temer")) label += " (acervo parcial de 2016)";
+    const option = new Option(label,file);
+    option.dataset.chamber = chamber;
+    return option;
+  });
+  $("house").replaceChildren(...options);
+  const preferred = period.series.find(s => s.file === preferredFile)
+    || period.series.find(s => s.chamber === previousChamber);
+  if (preferred) $("house").value = preferred.file;
+  openTerm($("house").value);
 }
 $("term").onchange = () => changePeriod();
-$("house").onchange = () => openTerm(periods.get($("term").value).chambers.get($("house").value));
+$("house").onchange = () => openTerm($("house").value);
 const initialBase = new URLSearchParams(window.location?.search).get("base");
-let initialChamber;
 const initialTerm = terms.find(t => t.file.replace(/\.js$/, "") === initialBase);
-if (initialTerm) {
-  const [name,chamber] = initialTerm.label.split(" · ");
-  const group = /^\d{4}$/.test(name) ? "Por ano" : "Por governo";
-  $("term").value = group + "|" + name;
-  initialChamber = chamber;
-}
-if (terms.length) changePeriod(initialChamber);
+if (initialTerm) $("term").value = initialTerm.group + "|" + initialTerm.label.split(" · ")[0];
+if (terms.length) changePeriod(initialTerm?.file);
 else $("status").textContent = "Nenhuma base encontrada.";

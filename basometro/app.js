@@ -16,7 +16,7 @@ for (const [key, label, first, last, since] of [
   }
 }
 terms.push(...annual.map(t => ({...t, group: "Por ano"})));
-terms.push(...(window.senateTerms || []).map(t => ({...t, group: "Por governo"})));
+terms.push(...(window.senateTerms || []).map(t => ({...t, group: /^senate-\d{4}\.js$/.test(t.file) ? "Por ano" : "Por governo"})));
 terms.push(...(window.archiveTerms || []).map(t => ({...t, group: "Por governo"})));
 const format = new Intl.NumberFormat("pt-BR");
 const percent = new Intl.NumberFormat("pt-BR", {maximumFractionDigits: 1});

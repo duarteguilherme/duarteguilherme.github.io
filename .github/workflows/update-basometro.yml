@@ -7,6 +7,7 @@ on:
     branches: [master]
     paths:
       - scripts/update_basometro.py
+      - scripts/update_senado.py
       - .github/workflows/update-basometro.yml
 
 permissions:
@@ -26,29 +27,34 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: master
-      - name: Check official Câmara data
+      - name: Check and stage verified roll calls from both chambers
         id: refresh
         shell: bash
         run: |
-          status=0
-          python3 scripts/update_basometro.py || status=$?
-          if [[ $status == 2 ]]; then
-            echo "review=true" >> "$GITHUB_OUTPUT"
-          else
-            exit "$status"
-          fi
+          refresh() {
+            local script=$1 status=0
+            shift
+            python3 "$script" || status=$?
+            if [[ $status == 0 || $status == 2 ]]; then
+              git add -- "$@"
+            fi
+            if [[ $status != 0 ]]; then
+              echo "review=true" >> "$GITHUB_OUTPUT"
+            fi
+          }
+          refresh scripts/update_basometro.py 'basometro/data/current-*.js' basometro/data/camara-proposal-types.js
+          refresh scripts/update_senado.py 'basometro/data/senate-*.js'
       - name: Commit verified data
         id: commit
         run: |
-          git add -- 'basometro/data/current-*.js' basometro/data/camara-proposal-types.js
           if ! git diff --cached --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'Refresh Câmara roll calls for Basômetro'
+            git commit -m 'Refresh roll calls for Basômetro'
             git push origin HEAD:master
           fi
           # Also recover a missed Pages build after a successful data push.
-          if [[ "$(git log -1 --format=%s)" == 'Refresh Câmara roll calls for Basômetro' ]]; then
+          if [[ "$(git log -1 --format=%s)" == 'Refresh roll calls for Basômetro' ]]; then
             echo "check_pages=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Publish the data on GitHub Pages
@@ -63,5 +69,5 @@ jobs:
       - name: Flag roll calls requiring review
         if: steps.refresh.outputs.review == 'true'
         run: |
-          echo '::error::See the Câmara data check for individual roll calls requiring review.'
+          echo '::error::See the data check for failed imports or roll calls requiring review.'
           exit 1

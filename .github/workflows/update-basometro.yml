@@ -1,0 +1,67 @@
+name: Update Basômetro
+on:
+  schedule:
+    - cron: '7 10 * * *' # 07:07 in Brasília
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - scripts/update_basometro.py
+      - .github/workflows/update-basometro.yml
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: update-basometro
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+      - name: Check official Câmara data
+        id: refresh
+        shell: bash
+        run: |
+          status=0
+          python3 scripts/update_basometro.py || status=$?
+          if [[ $status == 2 ]]; then
+            echo "review=true" >> "$GITHUB_OUTPUT"
+          else
+            exit "$status"
+          fi
+      - name: Commit verified data
+        id: commit
+        run: |
+          git add -- 'basometro/data/current-*.js' basometro/data/camara-proposal-types.js
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Refresh Câmara roll calls for Basômetro'
+            git push origin HEAD:master
+          fi
+          # Also recover a missed Pages build after a successful data push.
+          if [[ "$(git log -1 --format=%s)" == 'Refresh Câmara roll calls for Basômetro' ]]; then
+            echo "check_pages=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish the data on GitHub Pages
+        if: steps.commit.outputs.check_pages == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          endpoint="repos/$GITHUB_REPOSITORY/pages/builds"
+          if [[ "$(gh api "$endpoint/latest" --jq '.commit + " " + .status')" != "$(git rev-parse HEAD) built" ]]; then
+            gh api --method POST "$endpoint"
+          fi
+      - name: Flag roll calls requiring review
+        if: steps.refresh.outputs.review == 'true'
+        run: |
+          echo '::error::See the Câmara data check for individual roll calls requiring review.'
+          exit 1
